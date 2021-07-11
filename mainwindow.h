@@ -24,6 +24,12 @@ private slots:
 
     void on_actionImport_triggered();
 
+    void on_actionMove_Output_To_Input_triggered();
+
+    void on_actionSave_triggered();
+
+    void on_actionSave_As_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString inputFieldFile = "";
