@@ -2,7 +2,7 @@
 #include <algorithm>
 #include <sstream>
 using namespace std;
-void minify(string &y)
+string minify(string y)
 {
     stringstream a(y);
     y ="";
@@ -45,7 +45,8 @@ void minify(string &y)
         }
 
     }
-
+    return y;
+    
 }
 
 
