@@ -133,3 +133,22 @@ void testingTreePrint()
   t.root.children[0].addChild("text", "hello world");
   t.print();
 }
+
+class ProcessedFile
+{
+  Tree tree;
+  string declaration;
+  vector<string> upperComments;
+  vector<string> lowerComments;
+};
+
+class InputFile
+{
+  string fileContent;
+  bool isChecked;
+};
+
+class OutputFile
+{
+  string fileContent;
+};
