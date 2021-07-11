@@ -1,72 +1,51 @@
-#include <iostream>
-#include <fstream>
 #include <string>
 #include <algorithm>
-#include <iterator>
-#include <vector>
-#include <cctype>
-//#include <bits/stdc++.h>
+#include <sstream>
 using namespace std;
-//At the end use f stream to direct edit a file
-string oneLine()
+void minify(string &y)
 {
-    ifstream xmlData("data-sample.xml");
-    if(xmlData.fail())
-    {cout<<"Input failed.";
-        xmlData.close();
-        xmlData.clear();
-        }
-    else{
-    string s;
-    string y;
-    while(getline(xmlData,s))
+    stringstream a(y);
+    y ="";
+    string x;
+    while(getline(a,x))
     {
-        y+=s;
+        y+=x;
     }
-    xmlData.close();
-    xmlData.clear();
-    return y;
-    }
-
-}
-int main()
-{   ofstream output("whitespace2.xml");
-    string x = oneLine();
-    for(int i =0; i<x.length()-1;i++)
+    for(int i =0; i<y.length()-1;i++)
     {
-        if(x[i] == '>' && x[i+1] == ' ')
+        if(y[i] == '>' && y[i+1] == ' ')
         {   int j = 0;
-            while(x[i+1+j] ==' ')
+            while(y[i+1+j] ==' ')
                 j++;
-            x.erase(i+1,j);
+            y.erase(i+1,j);
         }
-        if(x[i] == '<' && x[i+1] == ' ')
+        else if(y[i] == '<' && y[i+1] == ' ')
         {   int j = 0;
-            while(x[i+1+j] ==' ')
+            while(y[i+1+j] ==' ')
                 j++;
-            x.erase(i+1,j);
+            y.erase(i+1,j);
         }
-        else if(x[i] =='<')
+        else if(y[i] =='<')
             {   int j =0;
-                while(x[i-1-j] ==' ')
+                while(y[i-1-j] ==' ')
                     j++;
-                x.erase(i-j,j);
+                y.erase(i-j,j);
         }
-        else if(x[i] =='>')
+        else if(y[i] =='>')
             {   int j =0;
-                while(x[i-1-j] ==' ')
+                while(y[i-1-j] ==' ')
                     j++;
-                x.erase(i-j,j);
+                y.erase(i-j,j);
         }
-        else if(x[i] == ' ' && x[i+1] == ' ')
+        else if(y[i] == ' ' && y[i+1] == ' ')
             {   int j = 0;
-            while(x[i+1+j] ==' ')
+            while(y[i+1+j] ==' ')
                 j++;
-            x.erase(i+1,j);
+            y.erase(i+1,j);
         }
 
     }
-    output<<x;
-    return 0;
+
 }
+
 
