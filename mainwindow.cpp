@@ -23,14 +23,12 @@ void MainWindow::on_actionNew_triggered()
     inputFieldFile.clear();
     ui->textEdit->setText(QString());
     ui->textBrowser->clear();
-
-
 }
 
 
 void MainWindow::on_actionImport_triggered()
 {
-     QString fileName = QFileDialog::getOpenFileName(this, "Open The File");
+     QString fileName = QFileDialog::getOpenFileName(this, "Open File");
        QFile file(fileName);
        inputFieldFile = fileName;
        if (!file.open(QIODevice::ReadOnly | QFile::Text)) {
@@ -41,8 +39,7 @@ void MainWindow::on_actionImport_triggered()
          QString text = in.readAll();
          ui->textEdit->setText(text);
          file.close();
-//         ui->textEdit->selectAll();
-//         ui->textEdit->setFontPointSize(14);
+
 
 }
 
@@ -52,7 +49,8 @@ void MainWindow::on_actionImport_triggered()
 void MainWindow::on_actionMove_Output_To_Input_triggered()
 {
     ui->textBrowser->selectAll();
-    ui->textBrowser->cut();
+    ui->textBrowser->copy();
+    ui->textBrowser->clear();
     ui->textEdit->clear();
     ui->textEdit->paste();
 }
@@ -62,6 +60,7 @@ void MainWindow::on_actionSave_As_triggered()
 {
     QString fileName = QFileDialog::getSaveFileName(this, "Save as");
 
+    //.xml or .json according to output global var type
     QFile file(fileName+".xml");
 
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
@@ -69,29 +68,14 @@ void MainWindow::on_actionSave_As_triggered()
         return;
     }
 
-    inputFieldFile = fileName;
+    outputFieldFile = fileName;
 
     QTextStream out(&file);
 
-    QString text = ui->textEdit->toPlainText();
+    QString text = ui->textBrowser->toPlainText();
     out << text;
     file.close();
 }
 
 
-void MainWindow::on_actionSave_triggered()
-{
-    QString fileName = QFileDialog::getSaveFileName(this, "Save");
-      QFile file(fileName);
-      if (!file.open(QFile::WriteOnly | QFile::Text)) {
-          QMessageBox::warning(this, "Warning", "Cannot save file: " + file.errorString());
-          return;
-      }
-      inputFieldFile = fileName;
-      setWindowTitle(fileName);
-      QTextStream out(&file);
-      QString text = ui->textEdit->toPlainText();
-      out << text;
-      file.close();
-}
 
