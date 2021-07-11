@@ -1,4 +1,8 @@
+#include <string>
+#include <vector>
+#include <iostream>
 
+using namespace std;
 class TreeNode
 {
 public:
@@ -144,12 +148,14 @@ class ProcessedFile
 
 class InputFile
 {
+public:
   string fileContent;
-  bool isChecked;
+  bool isChecked =false;
 };
 
 class OutputFile
 {
+public:
   string fileContent;
   string fileType;
 };

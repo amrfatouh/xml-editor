@@ -1,5 +1,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
+#include "main.cpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -37,6 +38,7 @@ void MainWindow::on_actionImport_triggered()
          }
          QTextStream in(&file);
          QString text = in.readAll();
+         inFile.fileContent=text.toStdString();
          ui->textEdit->setText(text);
          file.close();
 
