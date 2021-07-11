@@ -157,5 +157,5 @@ class OutputFile
 {
 public:
   string fileContent;
-  string fileType;
+  string fileType ="xml";
 };

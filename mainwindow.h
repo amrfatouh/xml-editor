@@ -28,6 +28,8 @@ private slots:
 
     void on_actionSave_As_triggered();
 
+    void on_actionMinify_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString inputFieldFile = "";

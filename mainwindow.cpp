@@ -65,7 +65,7 @@ void MainWindow::on_actionSave_As_triggered()
 
     //.xml or .json according to output global var type
     QString fileExtension = QString::fromStdString(outFile.fileType);
-    QFile file(fileName+fileExtension);
+    QFile file(fileName+"."+fileExtension);
 
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(this, "Warning", "Cannot save file: " + file.errorString());
