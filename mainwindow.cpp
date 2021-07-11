@@ -1,6 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "main.cpp"
+#include "minifier.cpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -63,7 +64,8 @@ void MainWindow::on_actionSave_As_triggered()
     QString fileName = QFileDialog::getSaveFileName(this, "Save as");
 
     //.xml or .json according to output global var type
-    QFile file(fileName+".xml");
+    QString fileExtension = QString::fromStdString(outFile.fileType);
+    QFile file(fileName+fileExtension);
 
     if (!file.open(QFile::WriteOnly | QFile::Text)) {
         QMessageBox::warning(this, "Warning", "Cannot save file: " + file.errorString());
@@ -80,4 +82,14 @@ void MainWindow::on_actionSave_As_triggered()
 }
 
 
+
+
+void MainWindow::on_actionMinify_triggered()
+{
+    inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
+    outFile.fileContent=minify(inFile.fileContent);
+    outFile.fileType="xml";
+    QString minifyOutput = QString::fromStdString(outFile.fileContent);
+    ui->textBrowser->setText(minifyOutput);
+}
 
