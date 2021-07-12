@@ -155,6 +155,21 @@ public:
   {
     tree = Tree();
   }
+
+  void print()
+  {
+    cout << "declarations:\n";
+    for (int i = 0; i < declarations.size(); i++)
+      cout << declarations[i] << endl;
+    cout << "\nupper comments:\n";
+    for (int i = 0; i < upperComments.size(); i++)
+      cout << upperComments[i] << endl;
+    cout << "\ntree:\n";
+    tree.print();
+    cout << "\nlower comments:\n";
+    for (int i = 0; i < lowerComments.size(); i++)
+      cout << lowerComments[i] << endl;
+  }
 };
 
 class InputFile
