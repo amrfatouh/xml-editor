@@ -1,8 +1,6 @@
 #include <string>
 #include <algorithm>
 #include <sstream>
-#include <bitset>
-
 using namespace std;
 string compress(string y)
 {
@@ -13,23 +11,18 @@ string compress(string y)
     {
         y+=x;
     }
-    string str="";
-       for (int i = 0; i < y.length(); ++i) {
-           bitset<8> bs4(y[i]);
-           str.append(bs4.to_string());
-       }
-    int n = str.length();
+    int n = y.length();
     string output="";
-    for(int i =0; i<str.length()-1;i++)
+    for(int i =0; i<y.length()-1;i++)
     {
         
         int count = 1;
-        while (i < n - 1 && str[i] == str[i + 1]) {
+        while (i < n - 1 && y[i] == y[i + 1]) {
             count++;
             i++;
         }
-        output.append(str[i] + to_string(count));
+        output.append(y[i] + to_string(count));
+        }
+ return output;
     }
-    return output;
-}
 
