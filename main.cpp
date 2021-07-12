@@ -2,8 +2,8 @@
 #include <QApplication>
 #include "classes.cpp"
 
-InputFile inFile;
-OutputFile outFile;
+InputFile inFile = InputFile();
+OutputFile outFile = OutputFile();
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

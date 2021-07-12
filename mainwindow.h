@@ -30,6 +30,8 @@ private slots:
 
     void on_actionMinify_triggered();
 
+    void on_actionCompress_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString inputFieldFile = "";

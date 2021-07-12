@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "main.cpp"
 #include "minifier.cpp"
+#include "compress.cpp"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -91,5 +92,15 @@ void MainWindow::on_actionMinify_triggered()
     outFile.fileType="xml";
     QString minifyOutput = QString::fromStdString(outFile.fileContent);
     ui->textBrowser->setText(minifyOutput);
+}
+
+
+void MainWindow::on_actionCompress_triggered()
+{
+    inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
+    outFile.fileContent=compress(inFile.fileContent);
+    outFile.fileType="txt";
+    QString compressOutput = QString::fromStdString(outFile.fileContent);
+    ui->textBrowser->setText(compressOutput);
 }
 

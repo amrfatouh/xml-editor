@@ -10,6 +10,7 @@ CONFIG += c++11
 
 SOURCES += \
     classes.cpp \
+    compress.cpp \
     main.cpp \
     mainwindow.cpp \
     minifier.cpp
