@@ -119,6 +119,11 @@ class Tree
 public:
   TreeNode root;
 
+  //make the root an empty TreeNode
+  Tree()
+  {
+    root = TreeNode();
+  }
   Tree(TreeNode n)
   {
     root = n;
@@ -140,22 +145,41 @@ void testingTreePrint()
 
 class ProcessedFile
 {
+public:
   Tree tree;
   string declaration;
   vector<string> upperComments;
   vector<string> lowerComments;
+
+  ProcessedFile()
+  {
+    tree = Tree();
+    declaration = "";
+  }
 };
 
 class InputFile
 {
 public:
   string fileContent;
-  bool isChecked =false;
+  bool isChecked = false;
+
+  InputFile()
+  {
+    fileContent = "";
+    isChecked = false;
+  }
 };
 
 class OutputFile
 {
 public:
   string fileContent;
-  string fileType ="xml";
+  string fileType = "xml";
+
+  OutputFile()
+  {
+    fileContent = "";
+    fileType = "xml";
+  }
 };
