@@ -7,7 +7,7 @@ class TreeNode
 {
 public:
   string value;     // tagName | text | comment
-  TreeNode *parent; //parent of root is NULL
+  /*xxx*/ TreeNode *parent; //deprecated
   vector<TreeNode> children;
   vector<string> keys;   //for attributes
   vector<string> values; //for attributes
@@ -147,14 +147,13 @@ class ProcessedFile
 {
 public:
   Tree tree;
-  string declaration;
+  vector<string> declaration;
   vector<string> upperComments;
   vector<string> lowerComments;
 
   ProcessedFile()
   {
     tree = Tree();
-    declaration = "";
   }
 };
 
