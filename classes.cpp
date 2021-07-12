@@ -147,7 +147,7 @@ class ProcessedFile
 {
 public:
   Tree tree;
-  vector<string> declaration;
+  vector<string> declarations;
   vector<string> upperComments;
   vector<string> lowerComments;
 
