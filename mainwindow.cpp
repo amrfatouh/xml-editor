@@ -2,8 +2,9 @@
 #include "ui_mainwindow.h"
 #include "main.cpp"
 #include "minifier.cpp"
-#include "compress.cpp"
+#include "compressor.cpp"
 
+QBitArray outputBits(1);
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -75,11 +76,18 @@ void MainWindow::on_actionSave_As_triggered()
 
     outputFieldFile = fileName;
 
+    if(outFile.fileType=="txt"){
+        QDataStream stream(&file);
+        stream << outputBits;
+        file.close();
+    }
+    else{
     QTextStream out(&file);
 
     QString text = ui->textBrowser->toPlainText();
     out << text;
     file.close();
+    }
 }
 
 
@@ -102,5 +110,12 @@ void MainWindow::on_actionCompress_triggered()
     outFile.fileType="txt";
     QString compressOutput = QString::fromStdString(outFile.fileContent);
     ui->textBrowser->setText(compressOutput);
+    //QBitArray outputBits(1);
+    outputBits.resize(outFile.fileContent.length());
+    for(int i=0;i< outFile.fileContent.length();i++){
+        if(outFile.fileContent[i]=='1'){
+            outputBits.setBit(i);
+        }
+    }
 }
 
