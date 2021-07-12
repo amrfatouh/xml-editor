@@ -92,8 +92,9 @@ void testPrintPrettyXmlTree()
   cout << printPrettyXmlTree(file.tree.root, 0, "  ") << "\n\n";
 }
 
-string prettify(ProcessedFile file)
+string prettify(string minString)
 {
+  ProcessedFile file = parse(minString);
   string prettyString = "";
   string tab = "    ";
   for (int i = 0; i < file.declarations.size(); i++)
@@ -121,6 +122,6 @@ void testPrettify()
   minString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><?xml-model href=\"data.rnc\" type=\"application/relax-ng-compact-syntax\"?><!-- first comment --><!-- second comment --><body class=\"red\" id=\"my-body\"><div>hello world</div><!-- first comment -->hello world2<div><div>hello world3<!-- second comment --></div></div></body><!-- third comment -->";
   cout << "minString: " << minString << endl;
   cout << "prettified:\n";
-  cout << prettify(parse(minString));
+  cout << prettify(minString);
   cout << "\n\n\n";
 }
