@@ -1,3 +1,5 @@
+#ifndef XML_TO_JSON_H_
+#define XML_TO_JSON_H_
 #include "parsing.cpp"
 #include <vector>
 
@@ -69,3 +71,5 @@ string toJson(TreeNode n, int rankOfChild = 0, int tabs = 0)
     }
     return s;
 }
+
+#endif

@@ -1,3 +1,5 @@
+#ifndef COMPRESSOR_H_
+#define COMPRESSOR_H_
 #include <string>
 #include <queue>
 #include <unordered_map>
@@ -212,3 +214,5 @@ string compress(string text, QFile &file) {
     }
     return text;
 }
+
+#endif
