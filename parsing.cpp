@@ -535,8 +535,5 @@ void testParse()
   parse(minString).print();
   cout << "\n\n\n";
 }
-<<<<<<< HEAD
-=======
 
 #endif
->>>>>>> 388e0d729c86d153f80506573be1e8686da46c16
