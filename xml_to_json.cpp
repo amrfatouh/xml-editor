@@ -3,44 +3,70 @@
 #include <vector>
 
 using namespace std;
+string s = "";
+string tab = "    ";
 
-void toJson(TreeNode n, int rankOfChild = 0)
+string toJson(TreeNode n, int rankOfChild = 0, int tabs = 0)
 {
     if (n.isText)
     // print text
     {
-        cout << "\"" << n.value << "\"";
+        for (int i = 0; i < tabs; i++)
+        {
+            s += tab;
+        }
+        s += "\"#text\": ";
+        s += "\"" + n.value + "\"";
         if (n.children.size() == 1 || (n.children.size() == rankOfChild))
-            cout << "\n";
+            s += +"\n";
         else
-            cout << ",\n";
+            s += ",\n";
     }
     else if (n.isComment)
     // print comment
     {
-        cout << "<!-- " << n.value << " -->";
+        s += +"<!-- " + n.value + " -->";
     }
     else
     {
         // print tag
-        cout << "\"" << n.value << "\""
-             << ": ";
-        if (n.children.size() != 1)
-            cout << "{\n";
+        for (int i = 0; i < tabs; i++)
+        {
+            s += tab;
+        }
+        s += +"\"" + n.value + "\"" + ": ";
+        if (n.children.size() != 1 || n.keys.size() != 1)
+        {
+            s += "{\n";
+        }
         else
-            cout << "";
+            s += "";
+
         // print key value pairs
         for (int i = 0; i < n.keys.size(); i++)
         {
-            cout << " " << n.keys[i] << "=\"" << n.values[i] << "\"";
+            for (int i = 0; i < tabs + 1; i++)
+            {
+                s += tab;
+            }
+            s += "\"@" + n.keys[i] + "\"" + " = \"" + n.values[i] + "\"" + ",\n";
         }
+        tabs++;
         for (int i = 0; i < n.children.size(); i++)
         {
-            toJson(n.children[i], i + 1);
+            toJson(n.children[i], i + 1, tabs);
         }
-        if (n.children.size() != 1)
-            cout << "}\n";
+        if (n.children.size() != 1 || n.keys.size() != 1)
+        {
+            tabs--;
+            for (int i = 0; i < tabs; i++)
+            {
+                s += tab;
+            }
+            s += "}\n";
+        }
         else
-            cout << "";
+            s += "";
     }
+    return s;
 }
