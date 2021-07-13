@@ -3,6 +3,7 @@
 #include "main.cpp"
 #include "minifier.cpp"
 #include "compressor.cpp"
+#include "prettifying.cpp"
 
 QBitArray outputBits(1);
 MainWindow::MainWindow(QWidget *parent)
@@ -134,5 +135,15 @@ void MainWindow::on_actionCompress_triggered()
 //    QDataStream stream(&file);
 //    stream << outputBits;
     file.close();
+}
+
+
+void MainWindow::on_actionPrettify_triggered()
+{
+    inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
+    outFile.fileContent=prettify(inFile.fileContent);
+    outFile.fileType="xml";
+    QString prettifyOutput = QString::fromStdString(outFile.fileContent);
+    ui->textBrowser->setText(prettifyOutput);
 }
 

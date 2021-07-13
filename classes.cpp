@@ -7,7 +7,7 @@ class TreeNode
 {
 public:
   string value;     // tagName | text | comment
-  TreeNode *parent; //parent of root is NULL
+  /*xxx*/ TreeNode *parent; //deprecated
   vector<TreeNode> children;
   vector<string> keys;   //for attributes
   vector<string> values; //for attributes
@@ -91,28 +91,28 @@ public:
 
 //testing the creation of a tag, text, comment TreeNode
 //also testing print() function
-void testBasics()
-{
-  TreeNode n1("tag", "head");
-  n1.print();
-  TreeNode n2("text", "hello world");
-  n2.print();
-  TreeNode n3("comment", "this is a comment");
-  n3.print();
-}
+//void testBasics()
+//{
+//  TreeNode n1("tag", "head");
+//  n1.print();
+//  TreeNode n2("text", "hello world");
+//  n2.print();
+//  TreeNode n3("comment", "this is a comment");
+//  n3.print();
+//}
 
-void testPrintAll()
-{
-  TreeNode n("tag", "body");
-  n.addChild("tag", "div");
-  n.children[0].addChild("text", "hello world");
-  n.children[0].addAttribute("class", "red");
-  n.children[0].addAttribute("id", "my-div");
-  n.addChild("tag", "span");
-  n.addChild("comment", "this is a comment");
+//void testPrintAll()
+//{
+//  TreeNode n("tag", "body");
+//  n.addChild("tag", "div");
+//  n.children[0].addChild("text", "hello world");
+//  n.children[0].addAttribute("class", "red");
+//  n.children[0].addAttribute("id", "my-div");
+//  n.addChild("tag", "span");
+//  n.addChild("comment", "this is a comment");
 
-  n.printAll();
-}
+//  n.printAll();
+//}
 
 class Tree
 {
@@ -135,26 +135,40 @@ public:
   }
 };
 
-void testingTreePrint()
-{
-  Tree t(TreeNode("tag", "body"));
-  t.root.addChild("tag", "div");
-  t.root.children[0].addChild("text", "hello world");
-  t.print();
-}
+//void testingTreePrint()
+//{
+//  Tree t(TreeNode("tag", "body"));
+//  t.root.addChild("tag", "div");
+//  t.root.children[0].addChild("text", "hello world");
+//  t.print();
+//}
 
 class ProcessedFile
 {
 public:
   Tree tree;
-  string declaration;
+  vector<string> declarations;
   vector<string> upperComments;
   vector<string> lowerComments;
 
   ProcessedFile()
   {
     tree = Tree();
-    declaration = "";
+  }
+
+  void print()
+  {
+    cout << "declarations:\n";
+    for (int i = 0; i < declarations.size(); i++)
+      cout << declarations[i] << endl;
+    cout << "\nupper comments:\n";
+    for (int i = 0; i < upperComments.size(); i++)
+      cout << upperComments[i] << endl;
+    cout << "\ntree:\n";
+    tree.print();
+    cout << "\nlower comments:\n";
+    for (int i = 0; i < lowerComments.size(); i++)
+      cout << lowerComments[i] << endl;
   }
 };
 
@@ -183,3 +197,4 @@ public:
     fileType = "xml";
   }
 };
+
