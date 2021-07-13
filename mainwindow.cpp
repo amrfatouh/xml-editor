@@ -77,9 +77,17 @@ void MainWindow::on_actionSave_As_triggered()
     outputFieldFile = fileName;
 
     if(outFile.fileType=="txt"){
-        QDataStream stream(&file);
-        stream << outputBits;
-        file.close();
+//        QBitArray outputBits(1);
+//        long long outfileLength =outFile.fileContent.length();
+//        outputBits.resize(outfileLength);
+//        for(int i=0;i< outfileLength;i++){
+//            if(outFile.fileContent[i]=='1'){
+//                outputBits.setBit(i);
+//            }
+//        }
+//       QDataStream stream(&file);
+//       stream << outputBits;
+//        file.close();
     }
     else{
     QTextStream out(&file);
@@ -106,16 +114,25 @@ void MainWindow::on_actionMinify_triggered()
 void MainWindow::on_actionCompress_triggered()
 {
     inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
-    outFile.fileContent=compress(inFile.fileContent);
+    //outFile.fileContent=compress(inFile.fileContent);
     outFile.fileType="txt";
-    QString compressOutput = QString::fromStdString(outFile.fileContent);
-    ui->textBrowser->setText(compressOutput);
-    //QBitArray outputBits(1);
-    outputBits.resize(outFile.fileContent.length());
-    for(int i=0;i< outFile.fileContent.length();i++){
-        if(outFile.fileContent[i]=='1'){
-            outputBits.setBit(i);
-        }
+   // QString compressOutput = QString::fromStdString(outFile.fileContent);
+   ui->textBrowser->setLineWrapMode(QTextEdit::LineWrapMode(1));
+   // ui->textBrowser->setText(compressOutput);
+    QString fileName = QFileDialog::getSaveFileName(this, "Compress At");
+    QString fileExtension = QString::fromStdString(outFile.fileType);
+    QFile file(fileName+"."+fileExtension);
+
+    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+        QMessageBox::warning(this, "Warning", "Cannot save file: " + file.errorString());
+        return;
     }
+    outputFieldFile = fileName;
+    string str=compress(inFile.fileContent , file);
+//    QString compressOutput = QString::fromStdString(str);
+       ui->textBrowser->setText("The File is Compressed in The Choosen Path");
+//    QDataStream stream(&file);
+//    stream << outputBits;
+    file.close();
 }
 

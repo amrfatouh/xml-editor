@@ -2,7 +2,10 @@
 #include <queue>
 #include <unordered_map>
 #include <bits/stdc++.h>
-
+#include <QTextStream>
+#include <QFile>
+#include <QBitArray>
+#include <QDataStream>
 using namespace std;
 
 #define EMPTY_STRING ""
@@ -98,15 +101,20 @@ priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> createHuffmanTree(st
   
     // count the frequency of appearance of each character
     // and store it in a map
-    unordered_map<char, int> table;
-    for (int i = 0; i < text.length(); i++) {
+//    unordered_map<char, int> table;
+//    long long textLength = text.length();
+//    for (int i = 0; i < textLength; i++) {
   
-        //if not found in table insert it
-        if (table[text[i]]==0) {
-            char c = text[i];
-            int icount = count(text.begin(), text.end(), c);
-            table.insert({ c, icount });
-        }
+//        //if not found in table insert it
+//        if (table[text[i]]==0) {
+//            char c = text[i];
+//            int icount = count(text.begin(), text.end(), c);
+//            table.insert({ c, icount });
+//        }
+//    }
+    unordered_map<char, int> table;
+    for (char ch: text) {
+        table[ch]++;
     }
 
 
@@ -140,7 +148,7 @@ priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> createHuffmanTree(st
 
     return priorityQue;
 }
-string getEncodedString(HuffmanNode* root, string text) {
+string getEncodedString(HuffmanNode* root, string text, QFile &file) {
     // Traverse the Huffman Tree and store Huffman Codes
    // in a map. Also, print them
     unordered_map<char, string> huffmanCode;
@@ -150,8 +158,26 @@ string getEncodedString(HuffmanNode* root, string text) {
      // Print encoded string
     string encodedString;
     for (char ch : text) {
+//        QBitArray converted(huffmanCode[ch].length());
+//        for(int i=0;i< huffmanCode[ch].length();i++){
+//            if(huffmanCode[ch][i]=='1'){
+//                converted.setBit(i);
+//            }
+//        }
+
         encodedString += huffmanCode[ch];
+//        QDataStream streamx(&file);
+//        streamx << converted;
     }
+    auto len =encodedString.length();
+    QBitArray converted(len);
+            for(int i=0;i< len;i++){
+                if(encodedString[i]=='1'){
+                    converted.setBit(i);
+                }
+            }
+    QDataStream streamx(&file);
+    streamx << converted;
     return encodedString;
 
 }
@@ -176,13 +202,13 @@ string getDecodedString(HuffmanNode* root, string encodedString) {
     return funcOutput;
 }
 //you must ensure that the text isn't empty
-string compress(string text) {
+string compress(string text, QFile &file) {
     if (text != "") {
         auto huffmanTree = createHuffmanTree(text);
         // `root` stores pointer to the root of Huffman Tree
         HuffmanNode* root = huffmanTree.top();
 
-        return getEncodedString(root, text);
+        return getEncodedString(root, text, file);
     }
     return text;
 }
