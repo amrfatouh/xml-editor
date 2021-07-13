@@ -1,3 +1,5 @@
+#ifndef PRETTIFYING_H_
+#define PRETTIFYING_H_
 #include <iostream>
 #include <vector>
 #include <string>
@@ -5,6 +7,7 @@
 #include "parsing.cpp"
 
 using namespace std;
+
 string tabs(int tabsCount, string tab = "\t")
 {
   string text = "";
@@ -123,3 +126,8 @@ void testPrettify()
   cout << prettify(minString);
   cout << "\n\n\n";
 }
+<<<<<<< HEAD
+=======
+
+#endif
+>>>>>>> 388e0d729c86d153f80506573be1e8686da46c16

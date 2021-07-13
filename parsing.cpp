@@ -1,3 +1,5 @@
+#ifndef PARSING_H_
+#define PARSING_H_
 #include <iostream>
 #include <vector>
 #include <string>
@@ -5,6 +7,8 @@
 #include "classes.cpp"
 
 using namespace std;
+
+
 vector<string> getDeclarations(string &minString)
 {
   vector<string> declarations;
@@ -531,3 +535,8 @@ void testParse()
   parse(minString).print();
   cout << "\n\n\n";
 }
+<<<<<<< HEAD
+=======
+
+#endif
+>>>>>>> 388e0d729c86d153f80506573be1e8686da46c16
