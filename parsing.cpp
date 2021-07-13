@@ -6,6 +6,9 @@ using namespace std;
 
 #include "classes.cpp"
 
+#ifndef PARSING_H_
+#define PARSING_H_
+
 vector<string> getDeclarations(string &minString)
 {
   vector<string> declarations;
@@ -532,3 +535,5 @@ void testParse()
   parse(minString).print();
   cout << "\n\n\n";
 }
+
+#endif

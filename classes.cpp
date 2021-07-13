@@ -2,6 +2,9 @@
 #include <vector>
 #include <iostream>
 
+#ifndef CLASSES_H_
+#define CLASSES_H_
+
 using namespace std;
 class TreeNode
 {
@@ -197,3 +200,5 @@ public:
     fileType = "xml";
   }
 };
+
+#endif
