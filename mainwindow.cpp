@@ -4,6 +4,7 @@
 #include "minifier.h"
 #include "compressor.cpp"
 #include "prettifying.cpp"
+#include "xml_to_json.h"
 
 QBitArray outputBits(1);
 MainWindow::MainWindow(QWidget *parent)
@@ -177,4 +178,14 @@ void MainWindow::on_actionPrettify_triggered()
 //            file.close();
 //            huffmanCodeFile.close();
 //}
+
+
+void MainWindow::on_actionConvert_To_JSON_triggered()
+{
+    inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
+    outFile.fileContent=string_to_json(inFile.fileContent);
+    outFile.fileType="json";
+    QString conversionOutput = QString::fromStdString(outFile.fileContent);
+    ui->textBrowser->setText(conversionOutput);
+}
 

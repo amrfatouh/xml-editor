@@ -181,12 +181,13 @@ class InputFile
 {
 public:
   string fileContent;
-  bool isChecked = false;
-
+  bool isChecked;
+  bool errorFree;
   InputFile()
   {
     fileContent = "";
     isChecked = false;
+    errorFree = true;
   }
 };
 

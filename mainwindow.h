@@ -37,6 +37,8 @@ private slots:
     void on_actionPrettify_triggered();
 
 
+    void on_actionConvert_To_JSON_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString inputFieldFile = "";

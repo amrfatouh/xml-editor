@@ -1,7 +1,5 @@
-#ifndef XML_TO_JSON_H_
-#define XML_TO_JSON_H_
-#include "parsing.h"
-#include <vector>
+#include "xml_to_json.h"
+
 
 using namespace std;
 
@@ -43,7 +41,7 @@ vector<vector<TreeNode>> concatinate_childrens(vector<TreeNode> children)
 string s = "";
 string tab = "  ";
 
-string toJson(TreeNode n, int rankOfChild = 0, int tabs = 1, int times = 1, bool first = true, bool last = true)
+string toJson(TreeNode n, int rankOfChild , int tabs , int times , bool first , bool last )
 {
     if (n.isText)
     // print text
@@ -92,11 +90,38 @@ string toJson(TreeNode n, int rankOfChild = 0, int tabs = 1, int times = 1, bool
                 s += ",\n";
         }
     }
+
     else if (n.isComment)
     // print comment
     {
-        //s += +"<!-- " + n.value + " -->";
+        if (first)
+        {
+            for (int i = 0; i < tabs; i++)
+            {
+                s += tab;
+            }
+            s += "\"#comments\": ";
+            s += "[\n";
+        }
+        for (int i = 0; i < tabs + 1; i++)
+        {
+            s += tab;
+        }
+        s += "\"" + n.value + "\"";
+        if (n.children.size() == 1 || (n.children.size() == rankOfChild))
+            s += +"\n";
+        else
+            s += ",\n";
+        if (last)
+        {
+            for (int i = 0; i < tabs; i++)
+            {
+                s += tab;
+            }
+            s += "],\n";
+        }
     }
+
     else
     {
         if (times > 1)
@@ -114,7 +139,7 @@ string toJson(TreeNode n, int rankOfChild = 0, int tabs = 1, int times = 1, bool
             }
             else
             {
-                for (int i = 0; i < tabs - 1; i++)
+                for (int i = 0; i < tabs - 2; i++)
                 {
                     s += tab;
                 }
@@ -222,12 +247,13 @@ string toJson(TreeNode n, int rankOfChild = 0, int tabs = 1, int times = 1, bool
                 s += "";
         }
     }
+
     return s;
 }
 
 string string_to_json(string text)
 {
-    return toJson(parse(text).tree.root);
+    return toJson(parse(text).tree.root,0,1,1,true,true);
 }
 
-#endif
+
