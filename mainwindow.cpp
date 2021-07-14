@@ -20,7 +20,7 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("XEditora");
     ui->textEdit->setLineWrapMode(QTextEdit::LineWrapMode(0));
     ui->textBrowser->setLineWrapMode(QTextEdit::LineWrapMode(0));
-
+    ui->errorLabel->setHidden(true);
    }
 
 
@@ -210,7 +210,7 @@ void MainWindow::on_actionCheck_Errors_triggered()
     ui->actionPrettify->setEnabled(inFile.isChecked&&inFile.errorFree);
     ui->actionConvert_To_JSON->setEnabled(inFile.isChecked&&inFile.errorFree);
     ui->actionSuggest_Modifications->setEnabled(inFile.isChecked&&!inFile.errorFree);
-
+    ui->errorLabel->setHidden(!(inFile.isChecked&&!inFile.errorFree));
  }
 
 
@@ -218,14 +218,16 @@ void MainWindow::on_textEdit_textChanged()
 {
     if(ui->textEdit->toPlainText()==""){
         ui->actionCheck_Errors->setEnabled(false);
+        ui->errorLabel->setHidden(true);
     }
     else{
         ui->actionCheck_Errors->setEnabled(true);
     }
     inFile.isChecked=false;
     ui->actionPrettify->setEnabled(false);
+    ui->actionSuggest_Modifications->setEnabled(false);
     ui->actionConvert_To_JSON->setEnabled(false);
-
+    ui->errorLabel->setHidden(!(inFile.isChecked&&inFile.errorFree));
 }
 
 
