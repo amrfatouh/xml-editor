@@ -156,25 +156,25 @@ void MainWindow::on_actionPrettify_triggered()
 //void MainWindow::on_actionDecompress_triggered()
 //{
 //    QString fileName = QFileDialog::getOpenFileName(this, "Decompress File");
-//      QFile file(fileName);
-//      //inputFieldFile = fileName;
-//      if (!file.open(QIODevice::ReadOnly | QFile::Text)) {
-//            QMessageBox::warning(this, "Warning", "Cannot open file: " + file.errorString());
-//            return;
-//        }
+//          QFile file(fileName);
+//          //inputFieldFile = fileName;
+//          if (!file.open(QIODevice::ReadOnly)) {
+//                QMessageBox::warning(this, "Warning", "Cannot open file: " + file.errorString());
+//                return;
+//            }
 
-//      QFile huffmanCodeFile(fileName+"KEY");
-//      if (!huffmanCodeFile.open(QFile::ReadOnly | QFile::Text)) {
-//          QMessageBox::warning(this, "Warning", "Cannot save file: " + huffmanCodeFile.errorString());
-//          return;
-//      }
-//      string x=decompress(file, huffmanCodeFile);
-//        //QTextStream in(&file);
-//       // QString text = in.readAll();
-//      QString text = QString::fromStdString(x);
-//        //inFile.fileContent=text.toStdString();
-//        ui->textBrowser->setText(text);
-//        file.close();
-//        huffmanCodeFile.close();
+//          QFile huffmanCodeFile(fileName+"FREQTABLE");
+//          if (!huffmanCodeFile.open(QFile::ReadOnly | QFile::Text)) {
+//              QMessageBox::warning(this, "Warning", "Cannot save file: " + huffmanCodeFile.errorString());
+//              return;
+//          }
+//          string x=decompress(file, huffmanCodeFile);
+//            //QTextStream in(&file);
+//           // QString text = in.readAll();
+//          QString text = QString::fromStdString(x);
+//            //inFile.fileContent=text.toStdString();
+//            ui->textBrowser->setText(text);
+//            file.close();
+//            huffmanCodeFile.close();
 //}
 

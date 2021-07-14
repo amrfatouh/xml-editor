@@ -36,7 +36,6 @@ private slots:
 
     void on_actionPrettify_triggered();
 
-//    void on_actionDecompress_triggered();
 
 private:
     Ui::MainWindow *ui;
