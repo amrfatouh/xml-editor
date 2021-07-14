@@ -1,9 +1,11 @@
+#ifndef CLASSES_H_
+#define CLASSES_H_
+
 #include <string>
 #include <vector>
 #include <iostream>
 
-#ifndef CLASSES_H_
-#define CLASSES_H_
+
 
 using namespace std;
 class TreeNode
@@ -179,12 +181,13 @@ class InputFile
 {
 public:
   string fileContent;
-  bool isChecked = false;
-
+  bool isChecked;
+  bool errorFree;
   InputFile()
   {
     fileContent = "";
     isChecked = false;
+    errorFree = true;
   }
 };
 

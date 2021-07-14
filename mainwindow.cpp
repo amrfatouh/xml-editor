@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "main.cpp"
-#include "minifier.cpp"
+#include "minifier.h"
 #include "compressor.cpp"
 #include "prettifying.cpp"
 
@@ -92,7 +92,6 @@ void MainWindow::on_actionSave_As_triggered()
     }
     else{
     QTextStream out(&file);
-
     QString text = ui->textBrowser->toPlainText();
     out << text;
     file.close();
@@ -116,25 +115,31 @@ void MainWindow::on_actionCompress_triggered()
 {
     inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
     //outFile.fileContent=compress(inFile.fileContent);
-    outFile.fileType="txt";
+    //outFile.fileType="txt";
    // QString compressOutput = QString::fromStdString(outFile.fileContent);
    ui->textBrowser->setLineWrapMode(QTextEdit::LineWrapMode(1));
    // ui->textBrowser->setText(compressOutput);
     QString fileName = QFileDialog::getSaveFileName(this, "Compress At");
-    QString fileExtension = QString::fromStdString(outFile.fileType);
-    QFile file(fileName+"."+fileExtension);
+    //QString fileExtension = QString::fromStdString(outFile.fileType );
+    QFile file(fileName);
 
-    if (!file.open(QFile::WriteOnly | QFile::Text)) {
+    if (!file.open(QFile::WriteOnly  | QFile::Append)) {
         QMessageBox::warning(this, "Warning", "Cannot save file: " + file.errorString());
         return;
     }
     outputFieldFile = fileName;
-    string str=compress(inFile.fileContent , file);
+    QFile huffmanCodeFile(fileName+"FREQTABLE");
+    if (!huffmanCodeFile.open(QFile::WriteOnly | QFile::Text | QFile::Append)) {
+        QMessageBox::warning(this, "Warning", "Cannot save file: " + huffmanCodeFile.errorString());
+        return;
+    }
+    string str=compress(inFile.fileContent , file,huffmanCodeFile);
 //    QString compressOutput = QString::fromStdString(str);
        ui->textBrowser->setText("The File is Compressed in The Choosen Path");
 //    QDataStream stream(&file);
 //    stream << outputBits;
     file.close();
+    huffmanCodeFile.close();
 }
 
 
@@ -146,4 +151,30 @@ void MainWindow::on_actionPrettify_triggered()
     QString prettifyOutput = QString::fromStdString(outFile.fileContent);
     ui->textBrowser->setText(prettifyOutput);
 }
+
+
+//void MainWindow::on_actionDecompress_triggered()
+//{
+//    QString fileName = QFileDialog::getOpenFileName(this, "Decompress File");
+//      QFile file(fileName);
+//      //inputFieldFile = fileName;
+//      if (!file.open(QIODevice::ReadOnly | QFile::Text)) {
+//            QMessageBox::warning(this, "Warning", "Cannot open file: " + file.errorString());
+//            return;
+//        }
+
+//      QFile huffmanCodeFile(fileName+"KEY");
+//      if (!huffmanCodeFile.open(QFile::ReadOnly | QFile::Text)) {
+//          QMessageBox::warning(this, "Warning", "Cannot save file: " + huffmanCodeFile.errorString());
+//          return;
+//      }
+//      string x=decompress(file, huffmanCodeFile);
+//        //QTextStream in(&file);
+//       // QString text = in.readAll();
+//      QString text = QString::fromStdString(x);
+//        //inFile.fileContent=text.toStdString();
+//        ui->textBrowser->setText(text);
+//        file.close();
+//        huffmanCodeFile.close();
+//}
 

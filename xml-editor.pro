@@ -23,7 +23,9 @@ SOURCES += \
 
 
 HEADERS += \
-    mainwindow.h
+    mainwindow.h \
+    minifier.h \
+    parsing.h
 
 FORMS += \
     mainwindow.ui
