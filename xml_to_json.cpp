@@ -92,11 +92,38 @@ string toJson(TreeNode n, int rankOfChild = 0, int tabs = 1, int times = 1, bool
                 s += ",\n";
         }
     }
+
     else if (n.isComment)
     // print comment
     {
-        //s += +"<!-- " + n.value + " -->";
+        if (first)
+        {
+            for (int i = 0; i < tabs; i++)
+            {
+                s += tab;
+            }
+            s += "\"#comments\": ";
+            s += "[\n";
+        }
+        for (int i = 0; i < tabs + 1; i++)
+        {
+            s += tab;
+        }
+        s += "\"" + n.value + "\"";
+        if (n.children.size() == 1 || (n.children.size() == rankOfChild))
+            s += +"\n";
+        else
+            s += ",\n";
+        if (last)
+        {
+            for (int i = 0; i < tabs; i++)
+            {
+                s += tab;
+            }
+            s += "],\n";
+        }
     }
+
     else
     {
         if (times > 1)
@@ -114,7 +141,7 @@ string toJson(TreeNode n, int rankOfChild = 0, int tabs = 1, int times = 1, bool
             }
             else
             {
-                for (int i = 0; i < tabs - 1; i++)
+                for (int i = 0; i < tabs - 2; i++)
                 {
                     s += tab;
                 }
@@ -222,6 +249,7 @@ string toJson(TreeNode n, int rankOfChild = 0, int tabs = 1, int times = 1, bool
                 s += "";
         }
     }
+
     return s;
 }
 
