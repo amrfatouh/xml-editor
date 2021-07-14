@@ -126,6 +126,9 @@ p, li { white-space: pre-wrap; }
    <addaction name="actionMove_Output_To_Input"/>
   </widget>
   <action name="actionNew">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="text">
     <string>New</string>
    </property>
@@ -136,21 +139,33 @@ p, li { white-space: pre-wrap; }
    </property>
   </action>
   <action name="actionCheck_Errors">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Check Errors</string>
    </property>
   </action>
   <action name="actionSuggest_Modifications">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Suggest Modifications</string>
    </property>
   </action>
   <action name="actionPrettify">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Prettify</string>
    </property>
   </action>
   <action name="actionConvert_To_JSON">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Convert To JSON</string>
    </property>

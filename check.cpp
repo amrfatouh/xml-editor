@@ -8,28 +8,7 @@
 #include <ctype.h>
 #include <locale>
 using namespace std;
-class InputFile
-{ public:
-  string fileContent;
-  bool isChecked;
-  bool errorFree;
-  InputFile()
-  {
-    isChecked = false;
-    errorFree = true;
 
-
-  }
-};
-class OutputFile
-{ public:
-  string fileContent;
-  string fileType;
-  OutputFile()
-  {
-
-  }
-};
 class CheckNode
 {
     public:
@@ -329,6 +308,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     errorFree = false;
                     return input;
                     }
+                    continue;
                 }
                 else if(!nameCheck(name))
                 {   //tag name is illegal xml or starting with symbols/digits
@@ -354,8 +334,8 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                 {   
                     //Two Opening tags right after each other
                     cout<<"ERROR12!!"<<endl;
-                    while(!s.top().root)//get root tag
-                        s.pop();
+                    //while(!s.top().root)//get root tag
+                       // s.pop();
                     int begin = s.top().n;
                     int len = s.top().s.length();
                     error(input,begin,begin+len+2);
@@ -373,7 +353,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
     if(!s.empty()) //root tag?
     {   cout<<"ERROR13!!"<<endl;
         while(!s.top().root)
-            s.pop();
+           s.pop();
         int begin = s.top().n;
         int len = s.top().s.length();
         

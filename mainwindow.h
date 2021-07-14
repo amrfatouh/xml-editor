@@ -41,6 +41,9 @@ private slots:
 
     void on_actionCheck_Errors_triggered();
 
+    void on_textEdit_textChanged();
+
+
 private:
     Ui::MainWindow *ui;
     QString inputFieldFile = "";

@@ -194,9 +194,30 @@ void MainWindow::on_actionConvert_To_JSON_triggered()
 void MainWindow::on_actionCheck_Errors_triggered()
 {
     inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
+    inFile.errorFree=true;
     outFile.fileContent=tagCheck(inFile.fileContent,inFile.isChecked,inFile.errorFree);
     outFile.fileType="xml";
     QString checkOutput = QString::fromStdString(outFile.fileContent);
     ui->textBrowser->setText(checkOutput);
+    ui->actionPrettify->setEnabled(inFile.isChecked&&inFile.errorFree);
+    ui->actionConvert_To_JSON->setEnabled(inFile.isChecked&&inFile.errorFree);
+    ui->actionSuggest_Modifications->setEnabled(inFile.isChecked&&!inFile.errorFree);
+ }
+
+
+void MainWindow::on_textEdit_textChanged()
+{
+    if(ui->textEdit->toPlainText()==""){
+        ui->actionCheck_Errors->setEnabled(false);
+    }
+    else{
+        ui->actionCheck_Errors->setEnabled(true);
+    }
+    inFile.isChecked=false;
+    ui->actionPrettify->setEnabled(false);
+    ui->actionConvert_To_JSON->setEnabled(false);
+
 }
+
+
 
