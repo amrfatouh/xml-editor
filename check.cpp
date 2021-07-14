@@ -13,13 +13,16 @@ class CheckNode
     public:
     string s;
     int n;
+    bool root = false;
 };
 string escape =" \t\f\v\n\r";
-string legalCh = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+string legalCh = "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
 string legalCh2 = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890:-";
 string illegalCh = "<&";
 string apos = "apos;";
 string quot = "quot;";
+string amp = "amp;";
+string lt = "lt;";
 void error(string &s,int begin,int end)
 {
     string error1 = "{{";
@@ -28,18 +31,19 @@ void error(string &s,int begin,int end)
     s.insert(end,error2);
 }
 //escape sequence check.
-bool essq(string attr,string comp)
+bool essq(string attr)
 {
     for (int q = 0; q<attr.length();q++)
-        {
+        {   
             if(attr[q] =='<')
             {
                 return false;
             }
             if(attr[q] == '&')
                 {
-                   if(attr.substr(q+1,comp.length()) != comp)
+        if(attr.substr(q+1,quot.length()) != quot && attr.substr(q+1,amp.length()) != amp&& attr.substr(q+1,apos.length()) != apos&& attr.substr(q+1,lt.length()) != lt)
                         return false;
+                   
 
 
                 }
@@ -74,13 +78,13 @@ bool recCheck(string &s, int i, bool ver)
                 
                 if(s[i] == '<')
                 {   //checks if first character is legal or not
-                    cout<<"ERROR14!!"<<endl;
+                    cout<<"ERROR1!!"<<endl;
                     error(s,i+1,e+2);
                     return false;
 
                 }
                 else
-                {   cout<<"ERROR15!!"<<endl;
+                {   cout<<"ERROR2!!"<<endl;
                     int d = s.find_last_of("<",n-1)+1;
                     int e = s.find_last_of("\"\'",n-1)+1;
                     error(s,d,e+2);
@@ -92,7 +96,7 @@ bool recCheck(string &s, int i, bool ver)
         //checking if key contains illegal character
         if(s.substr(n,ek-n).find_first_not_of(legalCh2,0) != string::npos)
         {   //mark opening tag
-            cout<<"ERROR16!!"<<endl;
+            cout<<"ERROR3!!"<<endl;
             error(s,i+1,e+2);
             return false;
         }
@@ -101,7 +105,7 @@ bool recCheck(string &s, int i, bool ver)
         i = s.find_first_not_of(' ',ek);
         if(s[i] != '=')
         {   //mark key
-            cout<<"ERROR17!!"<<endl;
+            cout<<"ERROR4!!"<<endl;
             error(s,n,ek+2);
             return false;
         }
@@ -114,7 +118,7 @@ bool recCheck(string &s, int i, bool ver)
 
         //missing &apos; &quot and allowing ' ' instead of " "
         if(s[k] != '\"' && s[k] !='\'')
-            {   cout<<"ERROR18!!"<<endl;
+            {   cout<<"ERROR5!!"<<endl;
                 error(s,n,ek+2);
                 return false;
             }
@@ -135,9 +139,9 @@ bool recCheck(string &s, int i, bool ver)
                 }
 
             attr = s.substr(k,e-k+1);
-            if(!essq(attr,quot))
+            if(!essq(attr))
             {
-            cout<<"ERROR19!!"<<endl;
+            cout<<"ERROR6!!"<<endl;
             error(s,k,e+3);
             return false;
                 }
@@ -152,9 +156,9 @@ bool recCheck(string &s, int i, bool ver)
                 }
 
             attr = s.substr(k,e-k);
-            if(!essq(attr,apos))
+            if(!essq(attr))
             {
-            cout<<"ERROR20!!"<<endl;
+            cout<<"ERROR7!!"<<endl;
             error(s,k,e+3);
             return false;
                 }
@@ -165,9 +169,9 @@ bool recCheck(string &s, int i, bool ver)
         {
           return true;//No attributes or well-formated
         }
-        else if(s[e+1] == ' '||s[e+1] == '?')
+        else if(s[e+1] == ' '||s[e+1] == '?'||s[e+1]=='/')
             {   i = s.find_first_not_of(' ',e+1);
-                if(s[i] == '?' &&s[i+1] =='>'&&ver)
+                if((s[i] == '?' &&s[i+1] =='>'&&ver) || s[i] =='/')
                 {
                     return true; //it's a version tag
 
@@ -176,7 +180,7 @@ bool recCheck(string &s, int i, bool ver)
 
             }
         else
-            {   cout<<"ERROR21!!"<<endl;
+            {   cout<<"ERROR8!!"<<endl;
                 int d = s.find_last_of("<",e-1)+1;
                 error(s,d,e+3);
                 return false;
@@ -203,6 +207,10 @@ bool nameCheck(string s)
         return false;
     if(!isalpha(s[0]) && s[0] !='_')
         return false;
+    if(s.find_first_not_of("_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890-") !=string::npos )
+        {
+            return false;
+        }
     if(lowerCase(s) == "xml")
         return false;
     return true;
@@ -232,7 +240,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
         return input;
     }
     else if(f == "gibberish")
-    {   cout<<"ERROR01"<<endl;
+    {   cout<<"ERROR9"<<endl;
         errorFree = false;
         int index = input.find_first_of('<');
         if(index == string::npos)
@@ -241,7 +249,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
         return input;
     }
 
- 
+    bool root = false;
     stack <CheckNode> s;
     CheckNode temp;
     string name;
@@ -256,14 +264,14 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     //-- not marked + end of comment
                     if(input[i+2] != '-')
                         {
-                            cout<<"ERROR1!!"<<endl;
+                            cout<<"ERROR10!!"<<endl;
                             error(input,i+1,i+4);
                             errorFree = false;
                             return input;
                         }
                     else if(input[i+3] !='-')
                     {
-                        cout<<"ERROR2!!"<<endl;
+                        cout<<"ERROR11!!"<<endl;
                         error(input,i+2,i+5);
                         errorFree = false;
                         return input;
@@ -272,14 +280,14 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     if((x !=string::npos))
                     {   if(input[x+2] !='>')
                         {
-                        cout<<"ERROR3!!"<<endl;
+                        cout<<"ERROR12!!"<<endl;
                         error(input,x,x+4);
                         errorFree = false;
                         return input;}
                     }
                     else
                     {   //-- don't exist
-                        cout<<"ERROR4!!"<<endl;
+                        cout<<"ERROR13!!"<<endl;
                         error(input,i+1,i+4);
                         errorFree = false;
                         return input;
@@ -291,26 +299,27 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
 
                 if(s.empty())
                 {   //closing that doesn't have an opening tag
-                    cout<<"ERROR5!!"<<endl;
+                    cout<<"ERROR14!!"<<endl;
                     error(input,i+1,i+4);
                     errorFree = false;
                     return input;
                 }
-
-                int n = input.find_first_of(" >",i+2);
-                name = input.substr(i+2,n-(i+2));
-                n = input.find_first_not_of(" ",n);
+                int n;
+                int x = input.find_first_of(" ><",i+2);
+                name = input.substr(i+2,x-(i+2));
+                n = input.find_first_not_of(" ",x);
                 if(input[n] !='>')
                     {
-                        //closing bracket missing in a closing tag
+                        //closing bracket missing in a root closing tag
                         if(n==string::npos)
                             {   //
-                                cout<<"ERROR6!!"<<endl;
-                                error(input,i+2,input.length()+2);
+                                
+                                cout<<"ERROR15!!"<<endl;
+                                error(input,i+2,x+2);
                                 errorFree = false;
                                 return input;
                             }
-                        cout<<"ERROR7!!"<<endl;
+                        cout<<"ERROR16!!"<<endl;
                         error(input,i+2,n+2);
                         errorFree = false;
                         return input;
@@ -321,7 +330,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     s.pop();
                 else
                     {  //tag mismatch
-                        cout<<"ERROR8!!"<<endl;
+                        cout<<"ERROR17!!"<<endl;
                         int begin = s.top().n;
                         int len = s.top().s.length();
                         error(input,begin,begin+len+2);//+2 curly braces
@@ -330,24 +339,36 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     }
             }
             else
-            {   
-                //version tag
-                name = tagName(input,i+1);
-                if(input[i+1]== '?' && i == 0)
-                {
-                    ver = true;
+            {   name = tagName(input,i+1);
+                if(input[i+1]== '?' )
+                {   name = tagName(input,i+2);
+                    //version tag
+                    if(i == 0)
+                    {ver = true;
                     name = input.substr(i+2,3);
                     if(name != "xml")
                     {
-                    cout<<"ERROR9!!"<<endl;
+                    cout<<"ERROR18!!"<<endl;
                     error(input,i,i+5);
                     errorFree = false;
                     return input;
                     }
+                    }
+                    else if(!nameCheck(name))
+                    {
+                    //tag name is illegal, xml, or starting with symbols/digits
+                    cout<<"ERROR19!!"<<endl;
+                    error(input,i,i+3);
+                    errorFree = false;
+                    return input;
+                    }
+                    //xml-model or any other tag
+
+                
                 }
                 else if(!nameCheck(name))
                 {   //tag name is illegal, xml, or starting with symbols/digits
-                    cout<<"ERROR10!!"<<endl;
+                    cout<<"ERROR20!!"<<endl;
                     error(input,i,i+3);
                     errorFree = false;
                     return input;
@@ -355,7 +376,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
 
                 //attributecheck
                 if(!recCheck(input,i,ver))
-                        {   cout<<"ERROR11!!"<<endl;
+                        {   cout<<"ERROR21!!"<<endl;
                             errorFree = false;
                             return input;//exit function and return error after getting handled
                         }
@@ -365,33 +386,44 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                 temp.n = i+1;
                 //Root tag
                 // temp.root = s.empty()?true:false;
-
+                if(s.empty()&&root)
+                {
+                    //Root tag popped and something comes after it
+                    cout<<"ERROR22!!"<<endl;
+                    int begin = i+1;
+                    int len = name.length();
+                    error(input,begin,begin+len+2);
+                    errorFree = false;
+                    return input;
+                }
                 //root tag + normal tags
-                // if(!s.empty()&&!(s.top().root))//root = false; therefore stack is not empty
-                // {
-                //     //Two Opening tags right after each other
-                //     cout<<"ERROR12!!"<<endl;
-                //     int begin = s.top().n;
-                //     int len = s.top().s.length();
-                //     error(input,begin,begin+len+2);
-                //     errorFree = false;
-                //     return input;
-                // }
+                 if(s.empty() && !root)
+                    {
+                        root = true;
+
+                    }
+                
                 //pushdxx
+               
                 s.push(temp);
                 }
 
             }
+           
+
 
         }
+         
+            if(input[i] =='>'&&input[i-1] == '/')
+            {   
+                s.pop();//3ayl we ghlet e7na asfen
+
+            }
     }
-    if(!s.empty()) //root tag?
-    {   cout<<"ERROR13!!"<<endl;
-        // while(!s.top().root)
-        //     s.pop();
+    if(!s.empty())
+    {   cout<<"ERROR23!!"<<endl;
         int begin = s.top().n;
         int len = s.top().s.length();
-
         error(input,begin,begin+len+2);
         errorFree = false;
         return input;
@@ -399,7 +431,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
     int d =0;
     d = input.find_last_not_of(escape);
     if(input[d] !='>')
-    {   cout<<"ERROR02"<<endl;
+    {   cout<<"ERROR24"<<endl;
         d=input.find_last_of('>',d)+1;
         error(input,d,input.length()+2);
         errorFree = false;
@@ -598,16 +630,29 @@ void testError()
   cout << "expected output: \n" << endl;
   cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
 
-      cout << "#32" << endl;
+  cout << "#32" << endl;
   s = "<body></body>\n\n\n\n\n    ";
   cout << "string: " + s + "\n";
   cout << "expected output: <body></body>\n\n\n\n\n    " << endl;
+  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+
+  cout << "#32" << endl;
+  s = "<body></body>\n<body></body>";
+  cout << "string: " + s + "\n";
+  cout << "expected output: <body></body>\n<{{body}}></body>" << endl;
+  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+
+  cout << "#6V2" << endl;
+  s = "<body><pointer refs = \"n05200169 n05616246\">Attribute</pointer</body>";
+  cout << "string: " + s + "\n";
+  cout << "expected output: <body><pointer refs = \"n05200169 n05616246\">Attribute</{{pointer}}</body>" << endl;
   cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
 }
 void testFile()
 {   string s;
     string y;
     ifstream input("testCheck.xml");
+    ofstream output("testOutput.xml");
     while(getline(input,y))
         {
             s +=y +'\n';
@@ -615,6 +660,7 @@ void testFile()
     bool check = false;
     bool error = true;
     s = tagCheck(s,check,error);
+    output << s;
     cout<<s<<endl;
     cout<<check<<endl;
     cout<<error;
