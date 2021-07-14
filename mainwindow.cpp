@@ -5,6 +5,7 @@
 #include "compressor.cpp"
 #include "prettifying.cpp"
 #include "xml_to_json.h"
+#include "check.cpp"
 
 QBitArray outputBits(1);
 MainWindow::MainWindow(QWidget *parent)
@@ -187,5 +188,15 @@ void MainWindow::on_actionConvert_To_JSON_triggered()
     outFile.fileType="json";
     QString conversionOutput = QString::fromStdString(outFile.fileContent);
     ui->textBrowser->setText(conversionOutput);
+}
+
+
+void MainWindow::on_actionCheck_Errors_triggered()
+{
+    inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
+    outFile.fileContent=tagCheck(inFile.fileContent,inFile.isChecked,inFile.errorFree);
+    outFile.fileType="xml";
+    QString checkOutput = QString::fromStdString(outFile.fileContent);
+    ui->textBrowser->setText(checkOutput);
 }
 
