@@ -4,6 +4,8 @@
 #include "minifier.h"
 #include "compressor.cpp"
 #include "prettifying.cpp"
+#include "xml_to_json.h"
+#include "check.cpp"
 
 QBitArray outputBits(1);
 MainWindow::MainWindow(QWidget *parent)
@@ -156,25 +158,45 @@ void MainWindow::on_actionPrettify_triggered()
 //void MainWindow::on_actionDecompress_triggered()
 //{
 //    QString fileName = QFileDialog::getOpenFileName(this, "Decompress File");
-//      QFile file(fileName);
-//      //inputFieldFile = fileName;
-//      if (!file.open(QIODevice::ReadOnly | QFile::Text)) {
-//            QMessageBox::warning(this, "Warning", "Cannot open file: " + file.errorString());
-//            return;
-//        }
+//          QFile file(fileName);
+//          //inputFieldFile = fileName;
+//          if (!file.open(QIODevice::ReadOnly)) {
+//                QMessageBox::warning(this, "Warning", "Cannot open file: " + file.errorString());
+//                return;
+//            }
 
-//      QFile huffmanCodeFile(fileName+"KEY");
-//      if (!huffmanCodeFile.open(QFile::ReadOnly | QFile::Text)) {
-//          QMessageBox::warning(this, "Warning", "Cannot save file: " + huffmanCodeFile.errorString());
-//          return;
-//      }
-//      string x=decompress(file, huffmanCodeFile);
-//        //QTextStream in(&file);
-//       // QString text = in.readAll();
-//      QString text = QString::fromStdString(x);
-//        //inFile.fileContent=text.toStdString();
-//        ui->textBrowser->setText(text);
-//        file.close();
-//        huffmanCodeFile.close();
+//          QFile huffmanCodeFile(fileName+"FREQTABLE");
+//          if (!huffmanCodeFile.open(QFile::ReadOnly | QFile::Text)) {
+//              QMessageBox::warning(this, "Warning", "Cannot save file: " + huffmanCodeFile.errorString());
+//              return;
+//          }
+//          string x=decompress(file, huffmanCodeFile);
+//            //QTextStream in(&file);
+//           // QString text = in.readAll();
+//          QString text = QString::fromStdString(x);
+//            //inFile.fileContent=text.toStdString();
+//            ui->textBrowser->setText(text);
+//            file.close();
+//            huffmanCodeFile.close();
 //}
+
+
+void MainWindow::on_actionConvert_To_JSON_triggered()
+{
+    inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
+    outFile.fileContent=string_to_json(inFile.fileContent);
+    outFile.fileType="json";
+    QString conversionOutput = QString::fromStdString(outFile.fileContent);
+    ui->textBrowser->setText(conversionOutput);
+}
+
+
+void MainWindow::on_actionCheck_Errors_triggered()
+{
+    inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
+    outFile.fileContent=tagCheck(inFile.fileContent,inFile.isChecked,inFile.errorFree);
+    outFile.fileType="xml";
+    QString checkOutput = QString::fromStdString(outFile.fileContent);
+    ui->textBrowser->setText(checkOutput);
+}
 

@@ -1,7 +1,5 @@
-#ifndef XML_TO_JSON_H_
-#define XML_TO_JSON_H_
-#include "parsing.h"
-#include <vector>
+#include "xml_to_json.h"
+
 
 using namespace std;
 
@@ -43,7 +41,7 @@ vector<vector<TreeNode>> concatinate_childrens(vector<TreeNode> children)
 string s = "";
 string tab = "  ";
 
-string toJson(TreeNode n, int rankOfChild = 0, int tabs = 1, int times = 1, bool first = true, bool last = true)
+string toJson(TreeNode n, int rankOfChild , int tabs , int times , bool first , bool last )
 {
     if (n.isText)
     // print text
@@ -255,7 +253,7 @@ string toJson(TreeNode n, int rankOfChild = 0, int tabs = 1, int times = 1, bool
 
 string string_to_json(string text)
 {
-    return toJson(parse(text).tree.root);
+    return toJson(parse(text).tree.root,0,1,1,true,true);
 }
 
-#endif
+

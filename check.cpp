@@ -1,3 +1,5 @@
+#ifndef CHECK_H_
+#define CHECK_H_
 #include <iostream>
 #include <sstream>
 #include <string>
@@ -6,28 +8,7 @@
 #include <ctype.h>
 #include <locale>
 using namespace std;
-class InputFile
-{ public:
-  string fileContent;
-  bool isChecked;
-  bool errorFree;
-  InputFile()
-  {
-    isChecked = false;
-    errorFree = true;
 
-
-  }
-};
-class OutputFile
-{ public:
-  string fileContent;
-  string fileType;
-  OutputFile()
-  {
-
-  }
-};
 class CheckNode
 {
     public:
@@ -555,3 +536,4 @@ void testFile()
 
 }
 
+#endif

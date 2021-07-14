@@ -25,7 +25,8 @@ SOURCES += \
 HEADERS += \
     mainwindow.h \
     minifier.h \
-    parsing.h
+    parsing.h \
+    xml_to_json.h
 
 FORMS += \
     mainwindow.ui
