@@ -15,6 +15,7 @@ MainWindow::MainWindow(QWidget *parent)
     , ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    errorHighlighter = new myHighlighter(ui->textBrowser->document());
     this->setCentralWidget(ui->groupBox);
     setWindowTitle("XEditora");
     ui->textEdit->setLineWrapMode(QTextEdit::LineWrapMode(0));
@@ -204,7 +205,7 @@ void MainWindow::on_actionCheck_Errors_triggered()
     outFile.fileType="xml";
     QString checkOutput = QString::fromStdString(outFile.fileContent);
 
-    myHighlighter errorHighlighter(ui->textBrowser->document());
+    //myHighlighter errorHighlighter(ui->textBrowser->document());
     ui->textBrowser->setPlainText(checkOutput);
     ui->actionPrettify->setEnabled(inFile.isChecked&&inFile.errorFree);
     ui->actionConvert_To_JSON->setEnabled(inFile.isChecked&&inFile.errorFree);

@@ -8,7 +8,7 @@
 #include <QMessageBox>
 #include <QBitArray>
 #include <QSyntaxHighlighter>
-
+#include "myhighlighter.h"
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -50,5 +50,6 @@ private:
     Ui::MainWindow *ui;
     QString inputFieldFile = "";
     QString outputFieldFile = "";
+    myHighlighter *errorHighlighter;
 };
 #endif // MAINWINDOW_H
