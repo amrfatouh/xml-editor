@@ -14,6 +14,7 @@ class CheckNode
     string s;
     int n;
 };
+
 void error(string &s,int begin,int end)
 {
    
@@ -71,8 +72,9 @@ bool bracketCheck(string &s)
         }
     return false;
 }
-string tagCheck(string input, bool check)
-{   if(bracketCheck(input))
+string tagCheck(string input, bool &errorFree,bool &isChecked)
+{       isChecked = true;
+       if(bracketCheck(input))
         {
             return input;
         }
@@ -85,14 +87,14 @@ string tagCheck(string input, bool check)
             if(!nameCheck(name))
              {
                 error(input,i,i+3);
-                check = false;
+                errorFree = false;
                 return input;
                 }
             //Closing Tag
             else if(input[i+1] =='/') 
             {   if(s.empty())
                 {   error(input,i+1,i+4);
-                    check = false;
+                    errorFree = false;
                     return input;
 
                 }
@@ -103,7 +105,7 @@ string tagCheck(string input, bool check)
                     {   int begin = s.top().n;
                         int len = s.top().s.length();
                         error(input,begin,begin+len+2);//+2 curly braces
-                        check = false;
+                        errorFree = false;
                         return input;
                     }
             }
@@ -121,7 +123,7 @@ string tagCheck(string input, bool check)
         int begin = s.top().n;
         int len = s.top().s.length();
         error(input,begin,begin+len+2);
-        check = false;
+        errorFree = false;
         return input;
     }
     return input;
