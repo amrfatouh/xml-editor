@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "main.cpp"
-#include "minifier.cpp"
+#include "minifier.h"
 #include "compressor.cpp"
 #include "prettifying.cpp"
 
@@ -123,7 +123,7 @@ void MainWindow::on_actionCompress_triggered()
     //QString fileExtension = QString::fromStdString(outFile.fileType );
     QFile file(fileName);
 
-    if (!file.open(QFile::WriteOnly | QFile::Text | QFile::Append)) {
+    if (!file.open(QFile::WriteOnly  | QFile::Append)) {
         QMessageBox::warning(this, "Warning", "Cannot save file: " + file.errorString());
         return;
     }

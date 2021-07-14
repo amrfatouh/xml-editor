@@ -1,6 +1,6 @@
 #ifndef XML_TO_JSON_H_
 #define XML_TO_JSON_H_
-#include "parsing.cpp"
+#include "parsing.h"
 #include <vector>
 
 using namespace std;

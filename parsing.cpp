@@ -1,11 +1,4 @@
-#ifndef PARSING_H_
-#define PARSING_H_
-#include <iostream>
-#include <vector>
-#include <string>
-#include <stack>
-#include "classes.cpp"
-#include "minifier.cpp"
+#include "parsing.h"
 
 using namespace std;
 
@@ -538,4 +531,3 @@ void testParse()
   cout << "\n\n\n";
 }
 
-#endif

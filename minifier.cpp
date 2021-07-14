@@ -1,9 +1,4 @@
-#ifndef MINIFIER_H_
-#define MINIFIER_H_
-#include <string>
-#include <algorithm>
-#include <sstream>
-#include <iostream>
+#include "minifier.h"
 using namespace std;
 string minify(string y)
 {   //Erases Newlines
@@ -114,4 +109,3 @@ void testMinify()
   cout << "string: " + s + "\n";
   cout << "expected output: <body></body>" << endl;
   cout << "actual   output: " << minify(s) << "\n\n";}
-#endif
