@@ -15,6 +15,7 @@ SOURCES += \
     main.cpp \
     mainwindow.cpp \
     minifier.cpp \
+    myhighlighter.cpp \
     parsing.cpp \
     prettifying.cpp \
     xml_to_json.cpp
@@ -25,6 +26,7 @@ SOURCES += \
 HEADERS += \
     mainwindow.h \
     minifier.h \
+    myhighlighter.h \
     parsing.h \
     xml_to_json.h
 

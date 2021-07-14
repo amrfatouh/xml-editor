@@ -6,8 +6,10 @@
 #include "prettifying.cpp"
 #include "xml_to_json.h"
 #include "check.cpp"
+#include "myhighlighter.h"
 
 QBitArray outputBits(1);
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -17,7 +19,9 @@ MainWindow::MainWindow(QWidget *parent)
     setWindowTitle("XEditora");
     ui->textEdit->setLineWrapMode(QTextEdit::LineWrapMode(0));
     ui->textBrowser->setLineWrapMode(QTextEdit::LineWrapMode(0));
+
    }
+
 
 MainWindow::~MainWindow()
 {
@@ -193,15 +197,18 @@ void MainWindow::on_actionConvert_To_JSON_triggered()
 
 void MainWindow::on_actionCheck_Errors_triggered()
 {
+
     inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
     inFile.errorFree=true;
     outFile.fileContent=tagCheck(inFile.fileContent,inFile.isChecked,inFile.errorFree);
     outFile.fileType="xml";
     QString checkOutput = QString::fromStdString(outFile.fileContent);
     ui->textBrowser->setText(checkOutput);
+    myHighlighter errorHighlighter(ui->textBrowser->document());
     ui->actionPrettify->setEnabled(inFile.isChecked&&inFile.errorFree);
     ui->actionConvert_To_JSON->setEnabled(inFile.isChecked&&inFile.errorFree);
     ui->actionSuggest_Modifications->setEnabled(inFile.isChecked&&!inFile.errorFree);
+
  }
 
 

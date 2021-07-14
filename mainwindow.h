@@ -7,7 +7,7 @@
 #include <QTextStream>
 #include <QMessageBox>
 #include <QBitArray>
-
+#include <QSyntaxHighlighter>
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -42,6 +42,8 @@ private slots:
     void on_actionCheck_Errors_triggered();
 
     void on_textEdit_textChanged();
+
+
 
 
 private:
