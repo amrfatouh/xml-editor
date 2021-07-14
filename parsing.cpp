@@ -1,10 +1,4 @@
-#ifndef PARSING_H_
-#define PARSING_H_
-#include <iostream>
-#include <vector>
-#include <string>
-#include <stack>
-#include "classes.cpp"
+#include "parsing.h"
 
 using namespace std;
 
@@ -479,8 +473,9 @@ void testParseXmlTree()
   cout << "\n\n";
 }
 
-ProcessedFile parse(string minString)
+ProcessedFile parse(string text)
 {
+  string minString = minify(text);
   ProcessedFile processedFile;
   processedFile.declarations = getDeclarations(minString);
   processedFile.upperComments = parseComments(minString);
@@ -528,12 +523,11 @@ void testParse()
   parse(minString).print();
   cout << "\n\n\n";
 
-  //1 declaration & 2 comments & root tag & 1 lower comment
-  minString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?><!-- first comment --><!-- second comment --><body></body><!-- third comment -->";
+  //1 declaration & 2 comments & root tag & child tag & 1 lower comment (unminified string)
+  minString = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n <!-- first comment -->\n <!-- second comment -->\n <body>\n\t<div>\n\t</div>\n</body>\n<!-- third comment -->";
   cout << "minString: " << minString << endl;
   cout << "processed file:\n";
   parse(minString).print();
   cout << "\n\n\n";
 }
 
-#endif

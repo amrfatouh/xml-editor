@@ -1,47 +1,164 @@
 #ifndef XML_TO_JSON_H_
 #define XML_TO_JSON_H_
-#include "parsing.cpp"
+#include "parsing.h"
 #include <vector>
 
 using namespace std;
-string s = "";
-string tab = "    ";
 
-string toJson(TreeNode n, int rankOfChild = 0, int tabs = 0)
+vector<vector<TreeNode>> concatinate_childrens(vector<TreeNode> children)
+{
+    vector<vector<TreeNode>> final_vector(children.size());
+    int current_index = 0;
+    for (int i = 0; i < children.size(); i++)
+    {
+        TreeNode current = children[i];
+        final_vector[current_index].push_back(current);
+        children.erase(children.begin() + i);
+
+        for (int j = 0; j < children.size(); j++)
+        {
+            if ((children[j].value == current.value) ||
+                (children[j].isText && current.isText) ||
+                (children[j].isComment && current.isComment))
+            {
+                final_vector[current_index].push_back(children[j]);
+                children.erase(children.begin() + j);
+                j = -1;
+            }
+        }
+        current_index++;
+        i = -1;
+    }
+    for (int i = 0; i < final_vector.size(); i++)
+    {
+        if (final_vector[i].size() == 0)
+        {
+            final_vector.erase(final_vector.begin() + i);
+            i = -1;
+        }
+    }
+    return final_vector;
+}
+
+string s = "";
+string tab = "  ";
+
+string toJson(TreeNode n, int rankOfChild = 0, int tabs = 1, int times = 1, bool first = true, bool last = true)
 {
     if (n.isText)
     // print text
     {
-        for (int i = 0; i < tabs; i++)
+        // list if needed
+        if (times > 1)
         {
-            s += tab;
+            if (first)
+            {
+                for (int i = 0; i < tabs; i++)
+                {
+                    s += tab;
+                }
+                s += "\"#text\": ";
+                s += "[\n";
+            }
+            for (int i = 0; i < tabs + 1; i++)
+            {
+                s += tab;
+            }
+            s += "\"" + n.value + "\"";
+            if (n.children.size() == 1 || (n.children.size() == rankOfChild))
+                s += +"\n";
+            else
+                s += ",\n";
+            if (last)
+            {
+                for (int i = 0; i < tabs; i++)
+                {
+                    s += tab;
+                }
+                s += "],\n";
+            }
         }
-        s += "\"#text\": ";
-        s += "\"" + n.value + "\"";
-        if (n.children.size() == 1 || (n.children.size() == rankOfChild))
-            s += +"\n";
         else
-            s += ",\n";
+        {
+            for (int i = 0; i < tabs; i++)
+            {
+                s += tab;
+            }
+            s += "\"#text\": ";
+            s += "\"" + n.value + "\"";
+            if (n.children.size() == 1 || (n.children.size() == rankOfChild))
+                s += +"\n";
+            else
+                s += ",\n";
+        }
     }
     else if (n.isComment)
     // print comment
     {
-        s += +"<!-- " + n.value + " -->";
+        //s += +"<!-- " + n.value + " -->";
     }
     else
     {
-        // print tag
-        for (int i = 0; i < tabs; i++)
+        if (times > 1)
         {
-            s += tab;
-        }
-        s += +"\"" + n.value + "\"" + ": ";
-        if (n.children.size() != 1 || n.keys.size() != 1)
-        {
-            s += "{\n";
+            if (rankOfChild == 0)
+                s += "{\n";
+            // print tag
+            for (int i = 0; i < tabs; i++)
+            {
+                s += tab;
+            }
+            if (first)
+            {
+                s += "\"" + n.value + "\"" + ": ";
+            }
+            else
+            {
+                for (int i = 0; i < tabs - 1; i++)
+                {
+                    s += tab;
+                }
+                s += "{\n";
+            }
+
+            if (n.children.size() != 1 || n.keys.size() != 1)
+            {
+                if (first)
+                    s += "[\n";
+                else
+                    s += "";
+            }
+            tabs++;
+
+            if (first)
+            {
+                for (int i = 0; i < tabs; i++)
+                {
+                    s += tab;
+                }
+                s += "{\n";
+            }
+            else
+                s += "";
         }
         else
-            s += "";
+        {
+            if (rankOfChild == 0)
+                s += "{\n";
+
+            // print tag
+            for (int i = 0; i < tabs; i++)
+            {
+                s += tab;
+            }
+            s += +"\"" + n.value + "\"" + ": ";
+            if (n.children.size() != 1 || n.keys.size() != 1)
+            {
+                s += "{\n";
+            }
+            else
+                s += "";
+        }
 
         // print key value pairs
         for (int i = 0; i < n.keys.size(); i++)
@@ -50,26 +167,67 @@ string toJson(TreeNode n, int rankOfChild = 0, int tabs = 0)
             {
                 s += tab;
             }
-            s += "\"@" + n.keys[i] + "\"" + " = \"" + n.values[i] + "\"" + ",\n";
+            s += "\"@" + n.keys[i] + "\"" + ": \"" + n.values[i] + "\"" + ",\n";
         }
         tabs++;
-        for (int i = 0; i < n.children.size(); i++)
+        vector<vector<TreeNode>> final_vector = concatinate_childrens(n.children);
+
+        for (int i = 0; i < final_vector.size(); i++)
         {
-            toJson(n.children[i], i + 1, tabs);
-        }
-        if (n.children.size() != 1 || n.keys.size() != 1)
-        {
-            tabs--;
-            for (int i = 0; i < tabs; i++)
+            for (int j = 0; j < final_vector[i].size(); j++)
             {
-                s += tab;
+                toJson(final_vector[i][j], i + 1,
+                       tabs, final_vector[i].size(),
+                       j == 0,
+                       j == final_vector[i].size() - 1);
             }
-            s += "}\n";
+        }
+        // closing brackets
+        if (times > 1)
+        {
+            if (n.children.size() != 1 || n.keys.size() != 1)
+            {
+                tabs--;
+                for (int i = 0; i < tabs; i++)
+                {
+                    s += tab;
+                }
+                s += rankOfChild != 0 ? "},\n" : "}\n}";
+
+                if (last)
+                {
+                    tabs--;
+                    for (int i = 0; i < tabs; i++)
+                    {
+                        s += tab;
+                    }
+                    s += "],\n";
+                }
+            }
+            else
+                s += "";
         }
         else
-            s += "";
+        {
+            if (n.children.size() != 1 || n.keys.size() != 1)
+            {
+                tabs--;
+                for (int i = 0; i < tabs; i++)
+                {
+                    s += tab;
+                }
+                s += rankOfChild != 0 ? "},\n" : "}\n}";
+            }
+            else
+                s += "";
+        }
     }
     return s;
+}
+
+string string_to_json(string text)
+{
+    return toJson(parse(text).tree.root);
 }
 
 #endif
