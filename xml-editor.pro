@@ -16,7 +16,8 @@ SOURCES += \
     mainwindow.cpp \
     minifier.cpp \
     parsing.cpp \
-    prettifying.cpp
+    prettifying.cpp \
+    xml_to_json.cpp
 
 
 

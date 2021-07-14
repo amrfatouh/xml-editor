@@ -1,10 +1,12 @@
+#ifndef MINIFIER_H_
+#define MINIFIER_H_
 #include <string>
 #include <algorithm>
 #include <sstream>
 #include <iostream>
 using namespace std;
 string minify(string y)
-{
+{   //Erases Newlines
     stringstream a(y);
     y ="";
     string x;
@@ -12,39 +14,21 @@ string minify(string y)
     {
         y+=x;
     }
-    for(int i =0; i<y.length()-1;i++)
+    //Erases all escape sequences
+    string escape =" \t\f\v\n\r";
+    for(int i =0; i<y.length();i++)
     {
-        if(y[i] == '>' && y[i+1] == ' ')
-        {   int j = 0;
-            while(y[i+1+j] ==' ')
-                j++;
-            y.erase(i+1,j);
-        }
-        else if(y[i] == '<' && y[i+1] == ' ')
-        {   int j = 0;
-            while(y[i+1+j] ==' ')
-                j++;
-            y.erase(i+1,j);
-        }
-        else if(y[i] =='<')
-            {   int j =0;
-                while(y[i-1-j] ==' ')
-                    j++;
-                y.erase(i-j,j);
-        }
-        else if(y[i] =='>')
-            {   int j =0;
-                while(y[i-1-j] ==' ')
-                    j++;
-                y.erase(i-j,j);
-        }
-        else if(y[i] == ' ' && y[i+1] == ' ')
-            {   int j = 0;
-            while(y[i+1+j] ==' ')
-                j++;
-            y.erase(i+1,j);
-        }
-
+        if(y[i] == '<' || y[i] =='>' || y[i] =='/' || y[i] =='!' || y[i] =='-' || y[i] =='?')
+            {     //Erase forward
+                    int j = y.find_first_not_of(escape,i+1)-1;
+                    y.erase(i+1,j-i);
+                if(i != 0)
+                    {
+                    //Erase backward
+                    int j = y.find_last_not_of(escape,i-1)+1;
+                    y.erase(j,i-j);
+                    }
+            }
     }
     return y;
 
@@ -130,3 +114,4 @@ void testMinify()
   cout << "string: " + s + "\n";
   cout << "expected output: <body></body>" << endl;
   cout << "actual   output: " << minify(s) << "\n\n";}
+#endif

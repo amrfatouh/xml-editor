@@ -93,9 +93,9 @@ void testPrintPrettyXmlTree()
   cout << printPrettyXmlTree(file.tree.root, 0, "  ") << "\n\n";
 }
 
-string prettify(string minString)
+string prettify(string text)
 {
-  ProcessedFile file = parse(minString);
+  ProcessedFile file = parse(text);
   string prettyString = "";
   string tab = "    ";
   for (int i = 0; i < file.declarations.size(); i++)
