@@ -32,7 +32,7 @@ MainWindow::~MainWindow()
 void MainWindow::on_actionNew_triggered()
 {
     inputFieldFile.clear();
-    ui->textEdit->setText(QString());
+    ui->textEdit->setPlainText(QString());
     ui->textBrowser->clear();
 }
 
@@ -49,7 +49,7 @@ void MainWindow::on_actionImport_triggered()
          QTextStream in(&file);
          QString text = in.readAll();
          inFile.fileContent=text.toStdString();
-         ui->textEdit->setText(text);
+         ui->textEdit->setPlainText(text);
          file.close();
 
 
@@ -113,7 +113,7 @@ void MainWindow::on_actionMinify_triggered()
     outFile.fileContent=minify(inFile.fileContent);
     outFile.fileType="xml";
     QString minifyOutput = QString::fromStdString(outFile.fileContent);
-    ui->textBrowser->setText(minifyOutput);
+    ui->textBrowser->setPlainText(minifyOutput);
 }
 
 
@@ -124,7 +124,7 @@ void MainWindow::on_actionCompress_triggered()
     //outFile.fileType="txt";
    // QString compressOutput = QString::fromStdString(outFile.fileContent);
    ui->textBrowser->setLineWrapMode(QTextEdit::LineWrapMode(1));
-   // ui->textBrowser->setText(compressOutput);
+   // ui->textBrowser->setPlainText(compressOutput);
     QString fileName = QFileDialog::getSaveFileName(this, "Compress At");
     //QString fileExtension = QString::fromStdString(outFile.fileType );
     QFile file(fileName);
@@ -141,7 +141,7 @@ void MainWindow::on_actionCompress_triggered()
     }
     string str=compress(inFile.fileContent , file,huffmanCodeFile);
 //    QString compressOutput = QString::fromStdString(str);
-       ui->textBrowser->setText("The File is Compressed in The Choosen Path");
+       ui->textBrowser->setPlainText("The File is Compressed in The Choosen Path");
 //    QDataStream stream(&file);
 //    stream << outputBits;
     file.close();
@@ -155,7 +155,7 @@ void MainWindow::on_actionPrettify_triggered()
     outFile.fileContent=prettify(inFile.fileContent);
     outFile.fileType="xml";
     QString prettifyOutput = QString::fromStdString(outFile.fileContent);
-    ui->textBrowser->setText(prettifyOutput);
+    ui->textBrowser->setPlainText(prettifyOutput);
 }
 
 
@@ -179,7 +179,7 @@ void MainWindow::on_actionPrettify_triggered()
 //           // QString text = in.readAll();
 //          QString text = QString::fromStdString(x);
 //            //inFile.fileContent=text.toStdString();
-//            ui->textBrowser->setText(text);
+//            ui->textBrowser->setPlainText(text);
 //            file.close();
 //            huffmanCodeFile.close();
 //}
@@ -191,7 +191,7 @@ void MainWindow::on_actionConvert_To_JSON_triggered()
     outFile.fileContent=string_to_json(inFile.fileContent);
     outFile.fileType="json";
     QString conversionOutput = QString::fromStdString(outFile.fileContent);
-    ui->textBrowser->setText(conversionOutput);
+    ui->textBrowser->setPlainText(conversionOutput);
 }
 
 
@@ -203,8 +203,9 @@ void MainWindow::on_actionCheck_Errors_triggered()
     outFile.fileContent=tagCheck(inFile.fileContent,inFile.isChecked,inFile.errorFree);
     outFile.fileType="xml";
     QString checkOutput = QString::fromStdString(outFile.fileContent);
-    ui->textBrowser->setText(checkOutput);
+
     myHighlighter errorHighlighter(ui->textBrowser->document());
+    ui->textBrowser->setPlainText(checkOutput);
     ui->actionPrettify->setEnabled(inFile.isChecked&&inFile.errorFree);
     ui->actionConvert_To_JSON->setEnabled(inFile.isChecked&&inFile.errorFree);
     ui->actionSuggest_Modifications->setEnabled(inFile.isChecked&&!inFile.errorFree);
