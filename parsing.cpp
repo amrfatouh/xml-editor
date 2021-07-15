@@ -136,12 +136,11 @@ TreeNode parseTag(string tag)
     }
     else
     {
-      spaceIndex = tag.find(' ');
-      charsCount = spaceIndex;
-      string value = tag.substr(0, charsCount);
-      value = value.substr(1, value.length() - 2);
-      tag.erase(0, charsCount + 1); //erase the value & the space
+      int secondDoubleQuotesIndex = tag.find("\"", 1);
+      charsCount = secondDoubleQuotesIndex - 1;
+      string value = tag.substr(1, charsCount);
       n.values.push_back(value);
+      tag.erase(0, charsCount + 2); //erase the value, the quotations, the space
     }
   }
   return n;
@@ -151,29 +150,41 @@ void testParseTag()
 {
   string tag;
 
-  //regular tag
+  cout << "#1" << endl;
+  cout << "regular tag" << endl;
   tag = "<div>";
   cout << "tag: " << tag << endl;
   cout << "TreeNode:\n";
   parseTag(tag).printAll();
   cout << "\n\n";
 
-  //empty tag
+  cout << "#2" << endl;
+  cout << "empty tag" << endl;
   tag = "<div/>";
   cout << "tag: " << tag << endl;
   cout << "TreeNode:\n";
   parseTag(tag).printAll();
   cout << "\n\n";
 
-  //tag with 1 attribute
+  cout << "#3" << endl;
+  cout << "tag with 1 attribute" << endl;
   tag = "<div class=\"red\">";
   cout << "tag: " << tag << endl;
   cout << "TreeNode:\n";
   parseTag(tag).printAll();
   cout << "\n\n";
 
-  //tag with 3 attributes
+  cout << "#4" << endl;
+  cout << "tag with 3 attributes" << endl;
   tag = "<div class=\"red\" id=\"mi-div\" data-num=\"1\">";
+  cout << "tag: " << tag << endl;
+  cout << "TreeNode:\n";
+  parseTag(tag).printAll();
+  cout << "\n\n";
+
+  cout << "#5" << endl;
+  cout << "tag with attribute that has spaces in its value" << endl;
+  tag = "<div class=\"red correct tall\">";
   cout << "tag: " << tag << endl;
   cout << "TreeNode:\n";
   parseTag(tag).printAll();
