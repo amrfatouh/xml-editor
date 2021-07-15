@@ -9,6 +9,7 @@
 #include <QBitArray>
 #include <QSyntaxHighlighter>
 #include "myhighlighter.h"
+#include <QRegExp>
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
@@ -45,6 +46,8 @@ private slots:
 
 
 
+
+    void on_actionDecompress_triggered();
 
 private:
     Ui::MainWindow *ui;
