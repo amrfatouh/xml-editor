@@ -183,6 +183,7 @@ public:
   string fileContent;
   bool isChecked;
   bool errorFree;
+  int errorNum;
   InputFile()
   {
     fileContent = "";

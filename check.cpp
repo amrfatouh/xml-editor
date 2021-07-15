@@ -50,7 +50,7 @@ bool essq(string attr)
         }
     return true;
 }
-bool recCheck(string &s, int i, bool ver)
+bool recCheck(string &s, int i, bool ver,int &errorCode)
     {   //i+1 is the tag name first character
         //end of tag name
         int e;
@@ -79,12 +79,15 @@ bool recCheck(string &s, int i, bool ver)
                 if(s[i] == '<')
                 {   //checks if first character is legal or not
                     cout<<"ERROR1!!"<<endl;
+                    errorCode = 1;
                     error(s,i+1,e+2);
-                    return false;
 
+                    return false;
                 }
                 else
-                {   cout<<"ERROR2!!"<<endl;
+                {   //
+                    cout<<"ERROR2!!"<<endl;
+                    errorCode = 2;
                     int d = s.find_last_of("<",n-1)+1;
                     int e = s.find_last_of("\"\'",n-1)+1;
                     error(s,d,e+2);
@@ -97,6 +100,7 @@ bool recCheck(string &s, int i, bool ver)
         if(s.substr(n,ek-n).find_first_not_of(legalCh2,0) != string::npos)
         {   //mark opening tag
             cout<<"ERROR3!!"<<endl;
+            errorCode = 3;
             error(s,i+1,e+2);
             return false;
         }
@@ -106,6 +110,7 @@ bool recCheck(string &s, int i, bool ver)
         if(s[i] != '=')
         {   //mark key
             cout<<"ERROR4!!"<<endl;
+            errorCode = 4;
             error(s,n,ek+2);
             return false;
         }
@@ -119,6 +124,7 @@ bool recCheck(string &s, int i, bool ver)
         //missing &apos; &quot and allowing ' ' instead of " "
         if(s[k] != '\"' && s[k] !='\'')
             {   cout<<"ERROR5!!"<<endl;
+                errorCode = 5;
                 error(s,n,ek+2);
                 return false;
             }
@@ -142,6 +148,7 @@ bool recCheck(string &s, int i, bool ver)
             if(!essq(attr))
             {
             cout<<"ERROR6!!"<<endl;
+            errorCode = 6;
             error(s,k,e+3);
             return false;
                 }
@@ -159,6 +166,7 @@ bool recCheck(string &s, int i, bool ver)
             if(!essq(attr))
             {
             cout<<"ERROR7!!"<<endl;
+            errorCode = 7;
             error(s,k,e+3);
             return false;
                 }
@@ -176,11 +184,13 @@ bool recCheck(string &s, int i, bool ver)
                     return true; //it's a version tag
 
                 }
-                return recCheck(s,e+1,ver);
+
+                return recCheck(s,e+1,ver,errorCode);
 
             }
         else
             {   cout<<"ERROR8!!"<<endl;
+                errorCode = 8;
                 int d = s.find_last_of("<",e-1)+1;
                 error(s,d,e+3);
                 return false;
@@ -229,7 +239,7 @@ string emptyF(string s)
     }
     return "ok";
 }
-string tagCheck(string input,bool &isChecked, bool &errorFree)
+string tagCheck(string input,bool &isChecked, bool &errorFree, int &errorCode)
 {
     isChecked = true;
     
@@ -241,6 +251,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
     }
     else if(f == "gibberish")
     {   cout<<"ERROR9"<<endl;
+        errorCode = 9;
         errorFree = false;
         int index = input.find_first_of('<');
         if(index == string::npos)
@@ -265,6 +276,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     if(input[i+2] != '-')
                         {
                             cout<<"ERROR10!!"<<endl;
+                            errorCode = 10;
                             error(input,i+1,i+4);
                             errorFree = false;
                             return input;
@@ -272,6 +284,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     else if(input[i+3] !='-')
                     {
                         cout<<"ERROR11!!"<<endl;
+                        errorCode = 11;
                         error(input,i+2,i+5);
                         errorFree = false;
                         return input;
@@ -281,6 +294,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     {   if(input[x+2] !='>')
                         {
                         cout<<"ERROR12!!"<<endl;
+                        errorCode = 12;
                         error(input,x,x+4);
                         errorFree = false;
                         return input;}
@@ -288,6 +302,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     else
                     {   //-- don't exist
                         cout<<"ERROR13!!"<<endl;
+                        errorCode = 13;
                         error(input,i+1,i+4);
                         errorFree = false;
                         return input;
@@ -300,6 +315,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                 if(s.empty())
                 {   //closing that doesn't have an opening tag
                     cout<<"ERROR14!!"<<endl;
+                    errorCode = 14;
                     error(input,i+1,i+4);
                     errorFree = false;
                     return input;
@@ -315,11 +331,13 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                             {   //
                                 
                                 cout<<"ERROR15!!"<<endl;
+                                errorCode = 15;
                                 error(input,i+2,x+2);
                                 errorFree = false;
                                 return input;
                             }
                         cout<<"ERROR16!!"<<endl;
+                        errorCode = 16;
                         error(input,i+2,n+2);
                         errorFree = false;
                         return input;
@@ -331,6 +349,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                 else
                     {  //tag mismatch
                         cout<<"ERROR17!!"<<endl;
+                        errorCode = 17;
                         int begin = s.top().n;
                         int len = s.top().s.length();
                         error(input,begin,begin+len+2);//+2 curly braces
@@ -349,6 +368,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     if(name != "xml")
                     {
                     cout<<"ERROR18!!"<<endl;
+                    errorCode = 18;
                     error(input,i,i+5);
                     errorFree = false;
                     return input;
@@ -358,6 +378,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                     {
                     //tag name is illegal, xml, or starting with symbols/digits
                     cout<<"ERROR19!!"<<endl;
+                    errorCode = 19;
                     error(input,i,i+3);
                     errorFree = false;
                     return input;
@@ -369,14 +390,16 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                 else if(!nameCheck(name))
                 {   //tag name is illegal, xml, or starting with symbols/digits
                     cout<<"ERROR20!!"<<endl;
+                    errorCode = 20;
                     error(input,i,i+3);
                     errorFree = false;
                     return input;
                     }
 
                 //attributecheck
-                if(!recCheck(input,i,ver))
+                if(!recCheck(input,i,ver,errorCode))
                         {   cout<<"ERROR21!!"<<endl;
+                            errorCode =21;
                             errorFree = false;
                             return input;//exit function and return error after getting handled
                         }
@@ -390,6 +413,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                 {
                     //Root tag popped and something comes after it
                     cout<<"ERROR22!!"<<endl;
+                    errorCode = 22;
                     int begin = i+1;
                     int len = name.length();
                     error(input,begin,begin+len+2);
@@ -409,8 +433,6 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
                 }
 
             }
-           
-
 
         }
          
@@ -422,6 +444,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
     }
     if(!s.empty())
     {   cout<<"ERROR23!!"<<endl;
+        errorCode = 23;
         int begin = s.top().n;
         int len = s.top().s.length();
         error(input,begin,begin+len+2);
@@ -432,6 +455,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree)
     d = input.find_last_not_of(escape);
     if(input[d] !='>')
     {   cout<<"ERROR24"<<endl;
+        errorCode = 24;
         d=input.find_last_of('>',d)+1;
         error(input,d,input.length()+2);
         errorFree = false;
@@ -445,208 +469,209 @@ void testError()
     string s;
     bool check;
     bool error;
+    int errorCode;
   cout << "#1" << endl;
   s = "< body></body>";
   cout << "string: " + s + "\n";
   cout << "expected output: {{<}} body></body>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#2" << endl;
   s = "<body><body><body>";
   cout << "string: " + s + "\n";
   cout << "expected output: <body><body><{{body}}>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#3" << endl;
   s = "<pointer refs  \"n05200169 n05616246\">Attribute</pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <pointer {{refs}}  \"n05200169 n05616246\">Attribute</pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#4" << endl;
   s = "<pointer refs = \"n05200169 n05616246\"Attribute</pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <{{pointer refs = \"n05200169 n05616246\"}}Attribute</pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#5" << endl;
   s = "<pointer refs = \"n05200169 n05616246\" Attribute</pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <pointer refs = \"n05200169 n05616246\" {{Attribute}}</pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#6" << endl;
   s = "<pointer refs = \"n05200169 n05616246\">Attribute</pointer                      ";
   cout << "string: " + s + "\n";
   cout << "expected output: <pointer refs = \"n05200169 n05616246\">Attribute</{{pointer}}                      " << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
   //same as #4
   cout << "#7" << endl;
   s = "<pointer refs = \"n05200169 n05616246\"<Attribute</pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <{{pointer refs = \"n05200169 n05616246\"}}<Attribute</pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#8" << endl;
   s = "<pointer refs = \"n05200169 n05616246\">Attribute</poinster>";
   cout << "string: " + s + "\n";
   cout << "expected output: <{{pointer}} refs = \"n05200169 n05616246\">Attribute</pointser>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#9" << endl;
   s = "<pointer refs = \"n05200169&quot; n05616246\">Attribute</pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <pointer refs = \"n05200169&quot; n05616246\">Attribute</pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#10" << endl;
   s = "<pointer refs = \"n05200169&quot n05616246\">Attribute</pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <pointer refs = {{\"n05200169&quot n05616246\"}}>Attribute</pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#11" << endl;
   s = "<pointer refs></pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <pointer {{refs}}></pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#12" << endl;
   s = "<pointer refs = \"n05200169 n05616246\" Attribute></pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <pointer refs = \"n05200169 n05616246\" {{Attribute}}></pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#13" << endl;
   s = "<pointer refs = \"n05200169 n05616246\" 3ttribute></pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <{{pointer refs = \"n05200169 n05616246\"}} 3ttribute></pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#14" << endl;
   s = "<pointer 3refs></pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <{{pointer}} 3refs></pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#15" << endl;
   s = "<pointer refs =\"n05 &quot; 616246 n05200169\" 3ource=\"1\" target=\"1\">Derivationally related form</pointer>";
   cout << "string: " + s + "\n";
   cout << "expected output: <{{pointer refs =\"n05 &quot; 616246 n05200169\"}} 3ource=\"1\" target=\"1\">Derivationally related form</pointer>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#16" << endl;
   s = "<! - A random selection of elements from data.xml\nSome IDREFS (refs attribute of element pointer) do not have a corresponding id in this sample-->";
   cout << "string: " + s + "\n";
   cout << "expected output: <{{!}} - A random selection of elements from data.xml\nSome IDREFS (refs attribute of element pointer) do not have a corresponding id in this sample-->" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#17" << endl;
   s = "<!- - A random selection of elements from data.xml\nSome IDREFS (refs attribute of element pointer) do not have a corresponding id in this sample-->";
   cout << "string: " + s + "\n";
   cout << "expected output: <!{{-}} - A random selection of elements from data.xml\nSome IDREFS (refs attribute of element pointer) do not have a corresponding id in this sample-->" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#18" << endl;
   s = "<!-- A random selection of elements from data.xml\nSome IDREFS (refs attribute of element pointer) do not have a corresponding id in this sample-->";
   cout << "string: " + s + "\n";
   cout << "expected output: <!-- A random selection of elements from data.xml\nSome IDREFS (refs attribute of element pointer) do not have a corresponding id in this sample-->" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#19" << endl;
   s = "<body><boi>asd</boi></body>";
   cout << "string: " + s + "\n";
   cout << "expected output: <body><boi>asd</boi></body>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#20" << endl;
   s = "<body><?xml version=\"1.0\" encoding=\"UTF-8\" ?></body>";
   cout << "string: " + s + "\n";
   cout << "expected output: <body>{{<}}?xml version=\"1.0\" encoding=\"UTF-8\" ?></body>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#21" << endl;
   s = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><body></body>";
   cout << "string: " + s + "\n";
   cout << "expected output: <?xml version=\"1.0\" encoding=\"UTF-8\" ?><body></body>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#22" << endl;
   s = "<!-- Hello --> <?xml version=\"1.0\" encoding=\"UTF-8\" ?><body></body>";
   cout << "string: " + s + "\n";
   cout << "expected output: <!-- Hello --> {{<}}?xml version=\"1.0\" encoding=\"UTF-8\" ?><body></body>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#23" << endl;
   s = "<!-- Hello -- --> <?xml version=\"1.0\" encoding=\"UTF-8\" ?><body></body>";
   cout << "string: " + s + "\n";
   cout << "expected output: <!-- Hello {{--}} --> <?xml version=\"1.0\" encoding=\"UTF-8\" ?><body></body>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#24" << endl;
   s = "<!-- Hello <body></body>";
   cout << "string: " + s + "\n";
   cout << "expected output: <{{!}}-- Hello <body></body>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#25" << endl;
   s = "<!-- Hello --> <body> a <b </body>";
   cout << "string: " + s + "\n";
   cout << "expected output: <!-- Hello --> <body> a <{{b}} </body>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#26" << endl;
   s = "<batata><batates><bombastic></bombastic></batates></batata>";
   cout << "string: " + s + "\n";
   cout << "expected output: <batata><batates></batates></batata>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#27" << endl;
   s = "<batata><batates><bombastic></batates></batata>";
   cout << "string: " + s + "\n";
   cout << "expected output: <batata><batates></batates></batata>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#28" << endl;
   s = "<body></body> asdasdasdasdasd ";
   cout << "string: " + s + "\n";
   cout << "expected output: <body></body>{{ asdasdasdasdasd }} " << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#29" << endl;
   s = " asdasdasdasdasd <body></body> asdasdasdasdasd ";
   cout << "string: " + s + "\n";
   cout << "expected output: {{ asdasdasdasdasd }}<body></body> asdasdasdasdasd " << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#30" << endl;
   s = "                                                                           ";
   cout << "string: " + s + "\n";
   cout << "expected output:                                                                            " << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
     cout << "#31" << endl;
   s = "\n\n\n\n\n    ";
   cout << "string: " + s + "\n";
   cout << "expected output: \n" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#32" << endl;
   s = "<body></body>\n\n\n\n\n    ";
   cout << "string: " + s + "\n";
   cout << "expected output: <body></body>\n\n\n\n\n    " << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#32" << endl;
   s = "<body></body>\n<body></body>";
   cout << "string: " + s + "\n";
   cout << "expected output: <body></body>\n<{{body}}></body>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 
   cout << "#6V2" << endl;
   s = "<body><pointer refs = \"n05200169 n05616246\">Attribute</pointer</body>";
   cout << "string: " + s + "\n";
   cout << "expected output: <body><pointer refs = \"n05200169 n05616246\">Attribute</{{pointer}}</body>" << endl;
-  cout << "actual   output: " << tagCheck(s,check,error) << "\n\n";
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 }
 void testFile()
 {   string s;
@@ -659,7 +684,8 @@ void testFile()
         }
     bool check = false;
     bool error = true;
-    s = tagCheck(s,check,error);
+    int errorCode;
+    s = tagCheck(s,check,error,errorCode);
     output << s;
     cout<<s<<endl;
     cout<<check<<endl;

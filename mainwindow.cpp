@@ -235,7 +235,7 @@ void MainWindow::on_actionCheck_Errors_triggered()
 
     inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
     inFile.errorFree=true;
-    outFile.fileContent=tagCheck(inFile.fileContent,inFile.isChecked,inFile.errorFree);
+    outFile.fileContent=tagCheck(inFile.fileContent,inFile.isChecked,inFile.errorFree,inFile.errorNum);
     outFile.fileType="xml";
     QString checkOutput = QString::fromStdString(outFile.fileContent);
 
