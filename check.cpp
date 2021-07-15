@@ -1,28 +1,7 @@
-#ifndef CHECK_H_
-#define CHECK_H_
-#include <iostream>
-#include <sstream>
-#include <string>
-#include <fstream>
-#include <stack>
-#include <ctype.h>
-#include <locale>
+#include "check.h"
+
 using namespace std;
-class CheckNode
-{
-    public:
-    string s;
-    int n;
-    bool root = false;
-};
-string escape =" \t\f\v\n\r";
-string legalCh = "_ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
-string legalCh2 = "_abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890:-";
-string illegalCh = "<&";
-string apos = "apos;";
-string quot = "quot;";
-string amp = "amp;";
-string lt = "lt;";
+
 void error(string &s,int begin,int end)
 {
     string error1 = "{{";
@@ -34,7 +13,7 @@ void error(string &s,int begin,int end)
 bool essq(string attr)
 {
     for (int q = 0; q<attr.length();q++)
-        {   
+        {
             if(attr[q] =='<')
             {
                 return false;
@@ -43,7 +22,7 @@ bool essq(string attr)
                 {
         if(attr.substr(q+1,quot.length()) != quot && attr.substr(q+1,amp.length()) != amp&& attr.substr(q+1,apos.length()) != apos&& attr.substr(q+1,lt.length()) != lt)
                         return false;
-                   
+
 
 
                 }
@@ -73,9 +52,9 @@ bool recCheck(string &s, int i, bool ver,int &errorCode)
         //checking first letter of key
         if(legalCh.find(s[n]) == string::npos)
             {
-                
+
                 //mark opening tag
-                
+
                 if(s[i] == '<')
                 {   //checks if first character is legal or not
                     cout<<"ERROR1!!"<<endl;
@@ -85,7 +64,7 @@ bool recCheck(string &s, int i, bool ver,int &errorCode)
                     return false;
                 }
                 else
-                {   //
+                {   //mark from tag opening to the quote before key
                     cout<<"ERROR2!!"<<endl;
                     errorCode = 2;
                     int d = s.find_last_of("<",n-1)+1;
@@ -97,12 +76,23 @@ bool recCheck(string &s, int i, bool ver,int &errorCode)
 
             }
         //checking if key contains illegal character
+        if(s[i] == '<')
+        {
         if(s.substr(n,ek-n).find_first_not_of(legalCh2,0) != string::npos)
         {   //mark opening tag
             cout<<"ERROR3!!"<<endl;
             errorCode = 3;
             error(s,i+1,e+2);
             return false;
+        }
+        }
+        else
+        {   //mark key
+             cout<<"ERROR25!!"<<endl;
+             errorCode = 25;
+             error(s,n,ek+2);
+             return false;
+
         }
         //first character after key
 
@@ -242,10 +232,10 @@ string emptyF(string s)
 string tagCheck(string input,bool &isChecked, bool &errorFree, int &errorCode)
 {
     isChecked = true;
-    
+
     string f =emptyF(input);
     if(f =="empty")
-    {  
+    {
         errorFree = false;
         return input;
     }
@@ -329,7 +319,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree, int &errorCode)
                         //closing bracket missing in a root closing tag
                         if(n==string::npos)
                             {   //
-                                
+
                                 cout<<"ERROR15!!"<<endl;
                                 errorCode = 15;
                                 error(input,i+2,x+2);
@@ -385,7 +375,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree, int &errorCode)
                     }
                     //xml-model or any other tag
 
-                
+
                 }
                 else if(!nameCheck(name))
                 {   //tag name is illegal, xml, or starting with symbols/digits
@@ -426,18 +416,18 @@ string tagCheck(string input,bool &isChecked, bool &errorFree, int &errorCode)
                         root = true;
 
                     }
-                
+
                 //pushdxx
-               
+
                 s.push(temp);
                 }
 
             }
 
         }
-         
+
             if(input[i] =='>'&&input[i-1] == '/')
-            {   
+            {
                 s.pop();//3ayl we ghlet e7na asfen
 
             }
@@ -450,7 +440,7 @@ string tagCheck(string input,bool &isChecked, bool &errorFree, int &errorCode)
         error(input,begin,begin+len+2);
         errorFree = false;
         return input;
-    }   
+    }
     int d =0;
     d = input.find_last_not_of(escape);
     if(input[d] !='>')
@@ -672,6 +662,12 @@ void testError()
   cout << "string: " + s + "\n";
   cout << "expected output: <body><pointer refs = \"n05200169 n05616246\">Attribute</{{pointer}}</body>" << endl;
   cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
+
+    cout << "#33" << endl;
+  s = "<body><pointer refs = \"n05200169 n05616246\" re)3fs = \"n05200169 n05616246\">Attribute</pointer</body>";
+  cout << "string: " + s + "\n";
+  cout << "expected output: <body><pointer refs = \"n05200169 n05616246\" {{re3)fs}} = \"n05200169 n05616246\">Attribute</pointer</body>" << endl;
+  cout << "actual   output: " << tagCheck(s,check,error,errorCode) << "\n\n";
 }
 void testFile()
 {   string s;
@@ -693,4 +689,4 @@ void testFile()
 
 }
 
-#endif
+

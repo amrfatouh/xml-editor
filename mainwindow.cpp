@@ -5,7 +5,7 @@
 #include "compressor.cpp"
 #include "prettifying.cpp"
 #include "xml_to_json.h"
-#include "check.cpp"
+#include "check.h"
 #include "myhighlighter.h"
 
 QBitArray outputBits(1);
@@ -146,9 +146,9 @@ void MainWindow::on_actionCompress_triggered()
     }
 //    HuffmanNode* root;
     string str=compress(inFile.fileContent , strFilePath,huffmanCodeFile);
-   QString compressOutput = QString::fromStdString(str);
-     //  ui->textBrowser->setPlainText("The File is Compressed in The Choosen Path");
-   ui->textBrowser->setPlainText(compressOutput);
+  // QString compressOutput = QString::fromStdString(str);
+       ui->textBrowser->setPlainText("The File is Compressed in The Choosen Path");
+  // ui->textBrowser->setPlainText(compressOutput);
 //    QDataStream stream(&file);
 //    stream << outputBits;
     //file.close();

@@ -12,6 +12,7 @@ SOURCES += \
     check.cpp \
     classes.cpp \
     compressor.cpp \
+    correction.cpp \
     main.cpp \
     mainwindow.cpp \
     minifier.cpp \
@@ -24,6 +25,8 @@ SOURCES += \
 
 
 HEADERS += \
+    check.h \
+    correction.h \
     mainwindow.h \
     minifier.h \
     myhighlighter.h \
