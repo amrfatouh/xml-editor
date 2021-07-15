@@ -203,10 +203,10 @@ p, li { white-space: pre-wrap; }
   </action>
   <action name="actionDecompress">
    <property name="enabled">
-    <bool>false</bool>
+    <bool>true</bool>
    </property>
    <property name="text">
-    <string>Decode</string>
+    <string>Decompress</string>
    </property>
   </action>
  </widget>

@@ -21,12 +21,17 @@ class HuffmanNode
 public:
     char value;
     int frequency;
+    int nNodes;
     HuffmanNode* left;
     HuffmanNode* right;
 };
-
+int countSubNodes(HuffmanNode* n) {
+    if (n == nullptr)
+      return 0;
+    return countSubNodes(n->left) + countSubNodes(n->right) + 1;
+  }
 // Function to allocate a new tree node
-HuffmanNode* addHuffmanNode(char ch, int freq, HuffmanNode* left, HuffmanNode* right)
+HuffmanNode* addHuffmanNode(char ch, int freq,int pri, HuffmanNode* left, HuffmanNode* right)
 {
     HuffmanNode* addedNode = new HuffmanNode();
 
@@ -34,7 +39,8 @@ HuffmanNode* addHuffmanNode(char ch, int freq, HuffmanNode* left, HuffmanNode* r
     addedNode->frequency = freq;
     addedNode->left = left;
     addedNode->right = right;
-
+   // addedNode->nNodes = countSubNodes(left)+countSubNodes(right) +1;
+    addedNode->nNodes =pri;
     return addedNode;
 }
 
@@ -45,10 +51,17 @@ public:
     bool operator()(const HuffmanNode* leftChild, const HuffmanNode* rightChild) const
     {
         // the highest priority item has the lowest frequency
+        if(leftChild->frequency!=rightChild->frequency){
         if (leftChild->frequency > rightChild->frequency)
             return true;
         else
-            return false;
+            return false;}
+        else{
+            if(leftChild->nNodes > rightChild->nNodes){
+                return true;
+            }
+            else{return false;}
+        }
     }
 };
 
@@ -101,7 +114,7 @@ void decode(HuffmanNode* root, int& index, string str, string& decodedString)
 }
 
 // Builds Huffman Tree
-priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> createHuffmanTree(string text ,unordered_map<char, int> &freqtable)
+priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> createHuffmanTree(string text ,unordered_map<char,pair<int, int>> &freqtable)
 {
   
     // count the frequency of appearance of each character
@@ -119,17 +132,28 @@ priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> createHuffmanTree(st
 //    }
 
     for (char ch: text) {
-        freqtable[ch]++;
+        freqtable[ch].first++;
     }
 
+//    for(auto i=freqtable.begin();i!=freqtable.end();i++){
+//       i->second.second++;
+//   }
+
+     int index=0;
+    for(auto &pair:freqtable){
+        pair.second.second=index;
+        index=index+1;
+    }
 
     // Create a priority queue to store live nodes of the Huffman tree
     priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> priorityQue;
 
     // Create a leaf node for each character and add it
     // to the priority queue.
+
     for (auto pair : freqtable) {
-        priorityQue.push(addHuffmanNode(pair.first, pair.second, nullptr, nullptr));
+        priorityQue.push(addHuffmanNode(pair.first, pair.second.first,pair.second.second, nullptr, nullptr));
+
     }
 
     // do till there is more than one node in the queue
@@ -148,17 +172,18 @@ priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> createHuffmanTree(st
         // Add the new node to the priority queue.
 
         int sum = left->frequency + right->frequency;
-        priorityQue.push(addHuffmanNode('\0', sum, left, right));
+        int sumPri=left->nNodes+right->nNodes;
+        priorityQue.push(addHuffmanNode('\0', sum,sumPri, left, right));
     }
 
     return priorityQue;
 }
-priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> createHuffmanTreeForDecoding(unordered_map<char, int> &freqtable)
+priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> createHuffmanTreeForDecoding(unordered_map<char,pair<int, int>> &freqtable)
 {
     // Create a priority queue to store live nodes of the Huffman tree
     priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> priorityQue;
     for (auto pair : freqtable) {
-        priorityQue.push(addHuffmanNode(pair.first, pair.second, nullptr, nullptr));
+        priorityQue.push(addHuffmanNode(pair.first, pair.second.first,pair.second.second, nullptr, nullptr));
     }
 
     // do till there is more than one node in the queue
@@ -177,12 +202,40 @@ priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> createHuffmanTreeFor
         // Add the new node to the priority queue.
 
         int sum = left->frequency + right->frequency;
-        priorityQue.push(addHuffmanNode('\0', sum, left, right));
+        int sumPri=left->nNodes+right->nNodes;
+        priorityQue.push(addHuffmanNode('\0', sum,sumPri, left, right));
     }
 
     return priorityQue;
 }
-string getEncodedString(HuffmanNode* root, string text, QFile &file ,unordered_map<char, string>& huffmanCode) {
+void write_string(string path, const string &content) {
+  char byte = 0;
+  int counter = 0;
+
+  ofstream output_file(path, ios::binary);
+
+  long long input_size = content.length();
+  output_file.write((char *)&input_size, 8);
+
+  for (auto input : content) {
+    input -= '0';
+    byte |= (input << (7 - counter));
+
+    counter++;
+
+    if (counter == 8) {
+      output_file.put(byte);
+
+      byte = 0;
+      counter = 0;
+    }
+  }
+
+  if (counter != 0) {
+    output_file.put(byte);
+  }
+}
+string getEncodedString(HuffmanNode* root, string text, string saveToPath ,unordered_map<char, string>& huffmanCode) {
 
 
     // Traverse the Huffman Tree and store Huffman Codes
@@ -205,16 +258,17 @@ string getEncodedString(HuffmanNode* root, string text, QFile &file ,unordered_m
 //        QDataStream streamx(&file);
 //        streamx << converted;
     }
-    auto lengt =encodedString.length();
-    QBitArray converted(lengt);
-    converted.fill(0);
-            for(int i=0;i< lengt;i++){
-                if(encodedString[i]=='1'){
-                    converted.setBit(i);
-                }
-            }
-   QDataStream streamx(&file);
-   streamx << converted;
+   // auto lengt =encodedString.length();
+    write_string(saveToPath,encodedString);
+//    QBitArray converted(lengt);
+//    converted.fill(0);
+//            for(int i=0;i< lengt;i++){
+//                if(encodedString[i]=='1'){
+//                    converted.setBit(i);
+//                }
+//            }
+//   QDataStream streamx(&file);
+//   streamx << converted;
 //            quint32 len = converted.size();
 //                streamx << len;
 //                if (len > 0)
@@ -242,21 +296,21 @@ string getDecodedString(HuffmanNode* root, string encodedString) {
     }
     return funcOutput;
 }
-void storeHuffmanFreqTable(unordered_map<char, int> &freqtable, QFile &huffmanCodeFile){
+void storeHuffmanFreqTable(unordered_map<char,pair<int, int>> &freqtable, QFile &huffmanCodeFile){
     //unordered_map<char,string>::iterator it =huffmanCode.begin();
-    unordered_map<char,int>::iterator it =freqtable.begin();
+    unordered_map<char,pair<int, int>>::iterator it =freqtable.begin();
     QTextStream streamh(&huffmanCodeFile);
    // while(it!=huffmanCode.end())
     while(it!=freqtable.end()){
         string intermed =to_string(it->first);
-        streamh<<QString::fromStdString(intermed)<<"\n"<<QString::fromStdString(to_string(it->second))<<"\n";
+        streamh<<QString::fromStdString(intermed)<<"\n"<<QString::fromStdString(to_string(it->second.first))<<"\n"<<QString::fromStdString(to_string(it->second.second))<<"\n";
        // streamh<<QString::fromStdString(intermed)<<"\n"<<QString::fromStdString(it->second)<<"\n";
         it++;
     }
 
 }
 
-void readHuffmanFreqTable(unordered_map<char, int> &freqtable, QFile &huffmanCodeFile){
+void readHuffmanFreqTable(unordered_map<char,pair<int, int>> &freqtable, QFile &huffmanCodeFile){
     QTextStream streamh(&huffmanCodeFile);
     while(!streamh.atEnd()){
     QString readedChar = streamh.readLine();
@@ -266,59 +320,71 @@ void readHuffmanFreqTable(unordered_map<char, int> &freqtable, QFile &huffmanCod
     QString readedStr = streamh.readLine();
     string convertedReadedStr= readedStr.toStdString();
     int counter=stoi(convertedReadedStr);
+    QString readedPri = streamh.readLine();
+    string convertedReadedPri=readedPri.toStdString();
+    int prio=stoi(convertedReadedPri);
     //huffmanCode.insert({hc,convertedReadedStr});
-    freqtable.insert({hc,counter});
+    freqtable.insert({hc,{counter,prio}});
     }
 }
 
 //you must ensure that the text isn't empty
-string compress(string text, QFile &file,QFile &huffmanCodeFile, HuffmanNode* &root) {
+string compress(string text, string filePath,QFile &huffmanCodeFile) {
     string funcOutput;
     unordered_map<char, string> huffmanCode;
     if (text != "") {
-        unordered_map<char, int> freqtable;
+        unordered_map<char,pair<int, int>> freqtable;
         auto huffmanTree = createHuffmanTree(text,freqtable);
         // `root` stores pointer to the root of Huffman Tree
-        //HuffmanNode* root = huffmanTree.top();
-        root = huffmanTree.top();
-        funcOutput= getEncodedString(root, text, file,huffmanCode);
+        HuffmanNode* root = huffmanTree.top();
+        funcOutput= getEncodedString(root, text, filePath,huffmanCode);
         storeHuffmanFreqTable(freqtable,huffmanCodeFile);
         return funcOutput;
     }
     return text;
 }
-string bits(string s)
-{
-    ifstream f(s, ios::binary | ios::in);
-    char c;
-    string y;
-    while (f.get(c))
-    {
-    for (int i = 7; i >= 0; i--)
-        {
-           if((c >> i) & 1)
-           {
-               y+='1';
-           }
-           else
-           {
-               y+='0';
-           }
-        }
+
+string read_string(string path) {
+  string buf;
+  char byte;
+
+  ifstream input_file(path, ios::binary);
+
+  long long input_size;
+  input_file.read((char *)&input_size, 8);
+
+  int extra_bits = input_size % 8;
+  int limit = input_size / 8;
+
+  for (auto i = 0; i < limit; i++) {
+    input_file.get(byte);
+
+    for (auto counter = 0; counter < 8; counter++) {
+      buf.push_back('0' + ((byte >> (7 - counter)) & 1));
     }
- return y;
+  }
+
+  if (extra_bits != 0) {
+    input_file.get(byte);
+
+    for (auto counter = 0; counter < extra_bits; counter++) {
+      buf.push_back('0' + ((byte >> (7 - counter)) & 1));
+    }
+  }
+
+  return buf;
 }
-string decompress(string strFilePath, QFile &huffmanCodeFile, HuffmanNode* &root){
+string decompress(string strFilePath, QFile &huffmanCodeFile){
     string funcOutput ="";
    //HuffmanNode* newRoot = new HuffmanNode();
     //unordered_map<char, string> huffmanCode;
-    unordered_map<char, int> freqtable;
+    unordered_map<char,pair<int, int>> freqtable;
 
-    readHuffmanFreqTable(freqtable,huffmanCodeFile);
-   auto huffmanTree = createHuffmanTreeForDecoding(freqtable);
+   readHuffmanFreqTable(freqtable,huffmanCodeFile);
+ auto huffmanTree = createHuffmanTreeForDecoding(freqtable);
     // `root` stores pointer to the root of Huffman Tree
-    //HuffmanNode* root = huffmanTree.top();
-    string enc=bits(strFilePath);
+   HuffmanNode* root = huffmanTree.top();
+    string enc=read_string(strFilePath);
 //    QDataStream streamx(&file);
 //    char* arr=new  char[4096] ;
 //    string enc ;
