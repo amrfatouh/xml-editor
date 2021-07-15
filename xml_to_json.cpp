@@ -37,10 +37,10 @@ vector<vector<TreeNode>> concatinate_childrens(vector<TreeNode> children)
     return final_vector;
 }
 
-string s = "";
+string s = "{\n";
 string tab = "  ";
 
-string toJson(TreeNode n, int rankOfChild, int tabs, int times, bool first, bool last)
+string toJson(TreeNode n, int rankOfChild, int rankOfNode, int tabs, int times, bool first, bool last, int maxRank)
 {
     if (n.isText)
     // print text
@@ -62,7 +62,7 @@ string toJson(TreeNode n, int rankOfChild, int tabs, int times, bool first, bool
                 s += tab;
             }
             s += "\"" + n.value + "\"";
-            if (n.children.size() == 1 || (n.children.size() == rankOfChild - 1))
+            if (last)
                 s += "\n";
             else
                 s += ",\n";
@@ -83,7 +83,7 @@ string toJson(TreeNode n, int rankOfChild, int tabs, int times, bool first, bool
             }
             s += "\"#text\": ";
             s += "\"" + n.value + "\"";
-            if (n.children.size() == 1 || (n.children.size() == rankOfChild - 1))
+            if (rankOfChild + rankOfNode == maxRank)
                 s += "\n";
             else
                 s += ",\n";
@@ -107,21 +107,22 @@ string toJson(TreeNode n, int rankOfChild, int tabs, int times, bool first, bool
             s += tab;
         }
         s += "\"" + n.value + "\"";
-        if (n.children.size() == 1 || (n.children.size() == rankOfChild))
+        if (last)
             s += "\n";
         else
-        {
-            if (!last)
-                s += ",";
-            s += "\n";
-        }
+            s += ",\n";
+
         if (last)
         {
             for (int i = 0; i < tabs; i++)
             {
                 s += tab;
             }
-            s += "],\n";
+            s += "]";
+            if (rankOfNode + rankOfChild == maxRank)
+                s += "\n";
+            else
+                s += ",\n";
         }
     }
 
@@ -129,8 +130,6 @@ string toJson(TreeNode n, int rankOfChild, int tabs, int times, bool first, bool
     {
         if (times > 1)
         {
-            if (rankOfChild == 0)
-                s += "{\n";
             // print tag
             for (int i = 0; i < tabs; i++)
             {
@@ -142,7 +141,7 @@ string toJson(TreeNode n, int rankOfChild, int tabs, int times, bool first, bool
             }
             else
             {
-                for (int i = 0; i < tabs - 1; i++)
+                for (int i = 0; i < tabs; i++)
                 {
                     s += tab;
                 }
@@ -169,25 +168,19 @@ string toJson(TreeNode n, int rankOfChild, int tabs, int times, bool first, bool
             else
                 s += "";
         }
+
         else
         {
-            if (rankOfChild == 0)
-                s += "{\n";
-
             // print tag
             for (int i = 0; i < tabs; i++)
             {
                 s += tab;
             }
             s += +"\"" + n.value + "\"" + ": ";
-            if (n.children.size() != 1 || n.keys.size() != 1)
-            {
-                s += "{";
-                if (n.children.size() != 0)
-                    s += "\n";
-            }
-            else
-                s += "";
+
+            s += "{";
+            if (n.children.size() != 0)
+                s += "\n";
         }
 
         // print key value pairs
@@ -206,60 +199,49 @@ string toJson(TreeNode n, int rankOfChild, int tabs, int times, bool first, bool
         {
             for (int j = 0; j < final_vector[i].size(); j++)
             {
-                toJson(final_vector[i][j], i + 1,
+                toJson(final_vector[i][j], j, i,
                        tabs, final_vector[i].size(),
                        j == 0,
-                       j == final_vector[i].size() - 1);
+                       j == final_vector[i].size() - 1, final_vector.size() + final_vector[i].size() - 2);
             }
         }
         // closing brackets
         if (times > 1)
         {
-            if (n.children.size() != 1 || n.keys.size() != 1)
+            tabs--;
+            for (int i = 0; i < tabs; i++)
+            {
+                s += tab;
+            }
+            s += (rankOfChild + 1 == times) ? "}\n" : "},\n";
+
+            if (last)
             {
                 tabs--;
                 for (int i = 0; i < tabs; i++)
                 {
                     s += tab;
                 }
-                s += rankOfChild != 0 ? "},\n" : "}\n}";
-
-                if (last)
-                {
-                    tabs--;
-                    for (int i = 0; i < tabs; i++)
-                    {
-                        s += tab;
-                    }
-                    s += "],\n";
-                }
+                s += (rankOfChild + rankOfNode == maxRank) ? "]\n" : "],\n";
             }
-            else
-                s += "";
         }
+
         else
         {
-            if (n.children.size() != 1 || n.keys.size() != 1)
-            {
-                if (n.children.size() != 0)
+            tabs--;
+            if (n.children.size() != 0)
+                for (int i = 0; i < tabs; i++)
                 {
-                    tabs--;
-                    for (int i = 0; i < tabs; i++)
-                    {
-                        s += tab;
-                    }
+                    s += tab;
                 }
-                s += rankOfChild != 0 ? "},\n" : "}\n}";
-            }
-            else
-                s += "";
+            s += (rankOfChild + rankOfNode == maxRank) ? "}\n" : "},\n";
         }
     }
 
-    return s;
+    return s + "}";
 }
 
 string string_to_json(string text)
 {
-    return toJson(parse(text).tree.root, 0, 1, 1, true, true);
+    return toJson(parse(text).tree.root, 0, 0, 1, 1, true, true, 0);
 }
