@@ -49,6 +49,8 @@ private slots:
 
     void on_actionDecompress_triggered();
 
+    void on_actionSuggest_Modifications_triggered();
+
 private:
     Ui::MainWindow *ui;
     QString inputFieldFile = "";

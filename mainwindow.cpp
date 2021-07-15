@@ -7,6 +7,7 @@
 #include "xml_to_json.h"
 #include "check.h"
 #include "myhighlighter.h"
+#include "correction.h"
 
 QBitArray outputBits(1);
 HuffmanNode* root;
@@ -268,4 +269,13 @@ void MainWindow::on_textEdit_textChanged()
 }
 
 
+
+
+void MainWindow::on_actionSuggest_Modifications_triggered()
+{
+    ui->textBrowser->setLineWrapMode(QTextEdit::LineWrapMode(0));
+    string corrected=correct(inFile.fileContent);
+    QString crr=QString::fromStdString(corrected);
+    ui->textBrowser->setPlainText(crr);
+}
 

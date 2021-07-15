@@ -76,8 +76,8 @@ bool recCheck(string &s, int i, bool ver,int &errorCode)
 
             }
         //checking if key contains illegal character
-        if(s[i] == '<')
-        {
+
+
         if(s.substr(n,ek-n).find_first_not_of(legalCh2,0) != string::npos)
         {   //mark opening tag
             cout<<"ERROR3!!"<<endl;
@@ -85,15 +85,8 @@ bool recCheck(string &s, int i, bool ver,int &errorCode)
             error(s,i+1,e+2);
             return false;
         }
-        }
-        else
-        {   //mark key
-             cout<<"ERROR25!!"<<endl;
-             errorCode = 25;
-             error(s,n,ek+2);
-             return false;
 
-        }
+
         //first character after key
 
         i = s.find_first_not_of(' ',ek);
