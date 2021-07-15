@@ -1,7 +1,15 @@
 #include "minifier.h"
 using namespace std;
 string minify(string y)
-{   //Erases all escape sequences
+{   //Erases newlines even in between
+    stringstream a(y);
+    y ="";
+    string x;
+    while(getline(a,x))
+    {
+        y+=x;
+    }
+    //Erases all escape sequences
     string escape =" \t\f\v\n\r";
     for(int i =0; i<y.length();i++)
     {
