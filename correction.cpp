@@ -185,6 +185,58 @@ void testCorrectError14()
        << endl;
 }
 
+//error 15: </{{a}}
+string correctError15(string markedString)
+{
+  int closingBracesIndex = getClosingBracesIndex(markedString);
+  markedString.insert(closingBracesIndex, ">");
+  removeBraces(markedString);
+  return markedString;
+}
+
+void testCorrectError15()
+{
+  string markedString;
+
+  cout << "#1\n";
+  cout << "closing tag without closing angle bracket\n";
+  markedString = "<a></{{a}}";
+  cout << "marked string: " << markedString << endl;
+  cout << "expected output: <a></a>\n";
+  cout << "actual   output: " << correctError15(markedString) << endl
+       << endl;
+}
+
+//error 16: </{{a}}
+string correctError16(string markedString)
+{
+  int closingBracesIndex = getClosingBracesIndex(markedString);
+  markedString.insert(closingBracesIndex, ">");
+  removeBraces(markedString);
+  return markedString;
+}
+
+void testCorrectError16()
+{
+  string markedString;
+
+  cout << "#1\n";
+  cout << "closing tag without closing angle bracket - with tag after it\n";
+  markedString = "<b><a></{{a}}</b>";
+  cout << "marked string: " << markedString << endl;
+  cout << "expected output: <b><a></a></b>\n";
+  cout << "actual   output: " << correctError16(markedString) << endl
+       << endl;
+
+  cout << "#2\n";
+  cout << "closing tag without closing angle bracket - with space after it\n";
+  markedString = "<b><a></{{a}} </b>";
+  cout << "marked string: " << markedString << endl;
+  cout << "expected output: <b><a></a> </b>\n";
+  cout << "actual   output: " << correctError16(markedString) << endl
+       << endl;
+}
+
 //error 17: <{{a}}>
 string correctError17(string markedString)
 {
@@ -322,7 +374,7 @@ string correct(string text)
   {
     if (markedString.find("{{") == string::npos)
       return markedString;
-    /**/ if (errNum == 1)
+    /* */ if (errNum == 1)
       return markedString;
     else if (errNum == 2)
       return markedString;
@@ -351,15 +403,15 @@ string correct(string text)
     else if (errNum == 14)
       markedString = correctError14(markedString);
     else if (errNum == 15)
-      return markedString;
+      markedString = correctError15(markedString);
     else if (errNum == 16)
-      return markedString;
+      markedString = correctError16(markedString);
     else if (errNum == 17)
       markedString = correctError17(markedString);
     else if (errNum == 18)
       markedString = correctError18(markedString);
     else if (errNum == 19)
-      markedString = correctError19(markedString);
+      return markedString;
     else if (errNum == 20)
       return markedString;
     else if (errNum == 21)
@@ -415,7 +467,7 @@ void testCorrect()
   text = "<aaa>hello world</bbb>";
   cout << "marked string: " << text << endl;
   cout << "expected output: "
-       << "<aaa>hello world</aa_a>"
+       << "<aaa>hello world</aaa>"
        << "\n";
   cout << "actual   output: " << correct(text) << endl
        << endl;
