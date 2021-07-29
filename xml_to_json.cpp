@@ -36,11 +36,10 @@ vector<vector<TreeNode>> concatinate_childrens(vector<TreeNode> children)
 	return final_vector;
 }
 
-string s = "{\n";
-string tab = "  ";
-
 string toJson(TreeNode n, int rankOfChild, int rankOfNode, int tabs, int times, bool first, bool last, int maxRank)
 {
+	string s = "{\n";
+	string tab = "  ";
 	if (n.isText)
 		// print text
 	{
