@@ -88,17 +88,6 @@ void MainWindow::on_actionSave_As_triggered()
     outputFieldFile = fileName;
 
     if(outFile.fileType=="txt"){
-//        QBitArray outputBits(1);
-//        long long outfileLength =outFile.fileContent.length();
-//        outputBits.resize(outfileLength);
-//        for(int i=0;i< outfileLength;i++){
-//            if(outFile.fileContent[i]=='1'){
-//                outputBits.setBit(i);
-//            }
-//        }
-//       QDataStream stream(&file);
-//       stream << outputBits;
-//        file.close();
     }
     else{
     QTextStream out(&file);
@@ -124,47 +113,21 @@ void MainWindow::on_actionMinify_triggered()
 void MainWindow::on_actionCompress_triggered()
 {
     inFile.fileContent=(ui->textEdit->toPlainText()).toStdString();
-    //outFile.fileContent=compress(inFile.fileContent);
-    //outFile.fileType="txt";
-   // QString compressOutput = QString::fromStdString(outFile.fileContent);
    ui->textBrowser->setLineWrapMode(QTextEdit::LineWrapMode(1));
-   // ui->textBrowser->setPlainText(compressOutput);
     QString fileName = QFileDialog::getSaveFileName(this, "Compress At");
-    //QString fileExtension = QString::fromStdString(outFile.fileType );
     QFile file(fileName);
     QDir d=QFileInfo(fileName).absoluteFilePath();
      QString absolute=d.absolutePath();
      string strFilePath = absolute.toStdString();
-//    if (!file.open(QFile::WriteOnly  | QFile::Append)) {
-//        QMessageBox::warning(this, "Warning", "Cannot save file: " + file.errorString());
-//        return;
-//    }
     outputFieldFile = fileName;
     QFile huffmanCodeFile(fileName+"FREQTABLE");
     if (!huffmanCodeFile.open(QFile:: WriteOnly | QFile::Text | QFile::Append)) {
         QMessageBox::warning(this, "Warning", "Cannot save file: " + huffmanCodeFile.errorString());
         return;
     }
-//    HuffmanNode* root;
     string str=compress(inFile.fileContent , strFilePath,huffmanCodeFile);
-  // QString compressOutput = QString::fromStdString(str);
        ui->textBrowser->setPlainText("The File is Compressed in The Choosen Path");
-  // ui->textBrowser->setPlainText(compressOutput);
-//    QDataStream stream(&file);
-//    stream << outputBits;
-    //file.close();
     huffmanCodeFile.close();
-//compressionMode =true;
-    //decompress
-    //    QDir d=QFileInfo(fileName).absoluteFilePath();
-    //    QString absolute=d.absolutePath();
-    //    string strFilePath = absolute.toStdString();
-    //    std::cout<<strFilePath;
-    //    ui->textBrowser->setPlainText(absolute);
-    //    string x=decompress(strFilePath, huffmanCodeFile,root,str);
-    //    QString text = QString::fromStdString(x);
-    //            //inFile.fileContent=text.toStdString();
-    //            ui->textBrowser->setPlainText(text);
 }
 
 
@@ -189,37 +152,15 @@ void MainWindow::on_actionDecompress_triggered()
     ui->textBrowser->setPlainText(absolute);
 
 ui->textBrowser->setLineWrapMode(QTextEdit::LineWrapMode(0));
-//          QFile file(fileName);
-          //inputFieldFile = fileName;
-//          if (!file.open(QIODevice::ReadOnly)) {
-//                QMessageBox::warning(this, "Warning", "Cannot open file: " + file.errorString());
-//                return;
-//            }
-
-
-//           std::cout<<fileName.toStdString();
-
-//           ui->textBrowser->setPlainText(fileName+"FREQTABLE");
          QFile huffmanCodeFile(fileName+"FREQTABLE");
           if (!huffmanCodeFile.open(QFile::ReadOnly | QFile::Text)) {
               QMessageBox::warning(this, "Warning", "Cannot save file: " + huffmanCodeFile.errorString());
               return;
           }
-        //  HuffmanNode* root;
-//         string encodedStr=(ui->textEdit->toPlainText()).toStdString();
-//         string y =getDecodedString(root,encodedStr);
       string x=decompress(strFilePath, huffmanCodeFile);
       QString view = QString::fromStdString(x);
       ui->textBrowser->setPlainText(view);
-            //QTextStream in(&file);
-           // QString text = in.readAll();
-  //  QString text = QString::fromStdString(x);
-            //inFile.fileContent=text.toStdString();
-        //    ui->textBrowser->setPlainText(text);
-            //file.close();
             huffmanCodeFile.close();
-      //compressionMode =false;
-      //ui->actionDecompress->setEnabled(false);
 }
 
 
@@ -241,8 +182,6 @@ void MainWindow::on_actionCheck_Errors_triggered()
     outFile.fileContent=tagCheck(inFile.fileContent,inFile.isChecked,inFile.errorFree,inFile.errorNum);
     outFile.fileType="xml";
     QString checkOutput = QString::fromStdString(outFile.fileContent);
-
-    //myHighlighter errorHighlighter(ui->textBrowser->document());
     ui->textBrowser->setPlainText(checkOutput);
     ui->actionPrettify->setEnabled(inFile.isChecked&&inFile.errorFree);
     ui->actionConvert_To_JSON->setEnabled(inFile.isChecked&&inFile.errorFree);
@@ -264,7 +203,6 @@ void MainWindow::on_textEdit_textChanged()
     ui->actionPrettify->setEnabled(false);
     ui->actionSuggest_Modifications->setEnabled(false);
     ui->actionConvert_To_JSON->setEnabled(false);
-    //ui->actionDecompress->setEnabled(compressionMode);
     ui->errorLabel->setHidden(!(inFile.isChecked&&inFile.errorFree));
 }
 
