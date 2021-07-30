@@ -14,7 +14,6 @@ HuffmanNode* addHuffmanNode(char ch, int freq,int pri, HuffmanNode* left, Huffma
     addedNode->frequency = freq;
     addedNode->left = left;
     addedNode->right = right;
-   // addedNode->nNodes = countSubNodes(left)+countSubNodes(right) +1;
     addedNode->nNodes =pri;
     return addedNode;
 }
@@ -72,27 +71,9 @@ void decode(HuffmanNode* root, int& index, string str, string& decodedString)
 priority_queue<HuffmanNode*, vector<HuffmanNode*>, compare> createHuffmanTree(string text ,unordered_map<char,pair<int, int>> &freqtable)
 {
   
-    // count the frequency of appearance of each character
-    // and store it in a map
-//    unordered_map<char, int> table;
-//    long long textLength = text.length();
-//    for (int i = 0; i < textLength; i++) {
-  
-//        //if not found in table insert it
-//        if (table[text[i]]==0) {
-//            char c = text[i];
-//            int icount = count(text.begin(), text.end(), c);
-//            table.insert({ c, icount });
-//        }
-//    }
-
     for (char ch: text) {
         freqtable[ch].first++;
     }
-
-//    for(auto i=freqtable.begin();i!=freqtable.end();i++){
-//       i->second.second++;
-//   }
 
      int index=0;
     for(auto &pair:freqtable){
@@ -202,32 +183,9 @@ string getEncodedString(HuffmanNode* root, string text, string saveToPath ,unord
      // Print encoded string
     string encodedString;
     for (char ch : text) {
-//        QBitArray converted(huffmanCode[ch].length());
-//        for(int i=0;i< huffmanCode[ch].length();i++){
-//            if(huffmanCode[ch][i]=='1'){
-//                converted.setBit(i);
-//            }
-//        }
-
         encodedString += huffmanCode[ch];
-//        QDataStream streamx(&file);
-//        streamx << converted;
     }
-   // auto lengt =encodedString.length();
     write_string(saveToPath,encodedString);
-//    QBitArray converted(lengt);
-//    converted.fill(0);
-//            for(int i=0;i< lengt;i++){
-//                if(encodedString[i]=='1'){
-//                    converted.setBit(i);
-//                }
-//            }
-//   QDataStream streamx(&file);
-//   streamx << converted;
-//            quint32 len = converted.size();
-//                streamx << len;
-//                if (len > 0)
-//                    streamx.writeRawData(converted.bits(), converted.size() - 1);
     return encodedString;
 
 }
@@ -252,14 +210,12 @@ string getDecodedString(HuffmanNode* root, string encodedString) {
     return funcOutput;
 }
 void storeHuffmanFreqTable(unordered_map<char,pair<int, int>> &freqtable, QFile &huffmanCodeFile){
-    //unordered_map<char,string>::iterator it =huffmanCode.begin();
     unordered_map<char,pair<int, int>>::iterator it =freqtable.begin();
     QTextStream streamh(&huffmanCodeFile);
-   // while(it!=huffmanCode.end())
     while(it!=freqtable.end()){
         string intermed =to_string(it->first);
         streamh<<QString::fromStdString(intermed)<<"\n"<<QString::fromStdString(to_string(it->second.first))<<"\n"<<QString::fromStdString(to_string(it->second.second))<<"\n";
-       // streamh<<QString::fromStdString(intermed)<<"\n"<<QString::fromStdString(it->second)<<"\n";
+
         it++;
     }
 
@@ -278,7 +234,6 @@ void readHuffmanFreqTable(unordered_map<char,pair<int, int>> &freqtable, QFile &
     QString readedPri = streamh.readLine();
     string convertedReadedPri=readedPri.toStdString();
     int prio=stoi(convertedReadedPri);
-    //huffmanCode.insert({hc,convertedReadedStr});
     freqtable.insert({hc,{counter,prio}});
     }
 }
@@ -331,8 +286,6 @@ string read_string(string path) {
 }
 string decompress(string strFilePath, QFile &huffmanCodeFile){
     string funcOutput ="";
-   //HuffmanNode* newRoot = new HuffmanNode();
-    //unordered_map<char, string> huffmanCode;
     unordered_map<char,pair<int, int>> freqtable;
 
    readHuffmanFreqTable(freqtable,huffmanCodeFile);
@@ -340,25 +293,6 @@ string decompress(string strFilePath, QFile &huffmanCodeFile){
     // `root` stores pointer to the root of Huffman Tree
    HuffmanNode* root = huffmanTree.top();
     string enc=read_string(strFilePath);
-//    QDataStream streamx(&file);
-//    char* arr=new  char[4096] ;
-//    string enc ;
-//    while(!streamx.atEnd()){
-//    int readLength=streamx.readRawData(arr,4096);
-//    for(int i=0; i<readLength; i++){
-//        for(int j=0; j<8;j++){
-//        if(((1<<j)&arr[i])>0){
-//            enc.push_back('1');
-//        }
-//        else{
-//            enc.push_back('0');
-//                }
-//        }
-//    }
-//    }
-//    delete[] arr;
-     //enc = encodedString;
-   //funcOutput=getDecodedString(root,enc);
 funcOutput=getDecodedString(root,enc);
     return funcOutput;
 }
