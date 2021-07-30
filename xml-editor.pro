@@ -26,6 +26,7 @@ SOURCES += \
 
 HEADERS += \
     check.h \
+    compressor.h \
     correction.h \
     mainwindow.h \
     minifier.h \

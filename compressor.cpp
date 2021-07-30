@@ -1,30 +1,5 @@
-#ifndef COMPRESSOR_H_
-#define COMPRESSOR_H_
-#include <string>
-#include <queue>
-#include <unordered_map>
-#include <bits/stdc++.h>
-#include <QTextStream>
-#include <QFile>
-#include <QBitArray>
-#include <QDataStream>
-#include <QString>
+#include "compressor.h"
 
-
-using namespace std;
-
-#define EMPTY_STRING ""
-
-// A Tree node
-class HuffmanNode
-{
-public:
-    char value;
-    int frequency;
-    int nNodes;
-    HuffmanNode* left;
-    HuffmanNode* right;
-};
 int countSubNodes(HuffmanNode* n) {
     if (n == nullptr)
       return 0;
@@ -44,26 +19,6 @@ HuffmanNode* addHuffmanNode(char ch, int freq,int pri, HuffmanNode* left, Huffma
     return addedNode;
 }
 
-// Comparison object to be used to order the heap
-class compare
-{
-public:
-    bool operator()(const HuffmanNode* leftChild, const HuffmanNode* rightChild) const
-    {
-        // the highest priority item has the lowest frequency
-        if(leftChild->frequency!=rightChild->frequency){
-        if (leftChild->frequency > rightChild->frequency)
-            return true;
-        else
-            return false;}
-        else{
-            if(leftChild->nNodes > rightChild->nNodes){
-                return true;
-            }
-            else{return false;}
-        }
-    }
-};
 
 // Utility function to check if Huffman Tree contains only a single node
 bool isLeaf(HuffmanNode* root) {
@@ -408,4 +363,4 @@ funcOutput=getDecodedString(root,enc);
     return funcOutput;
 }
 
-#endif
+
