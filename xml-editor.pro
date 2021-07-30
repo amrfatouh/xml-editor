@@ -31,6 +31,7 @@ HEADERS += \
     minifier.h \
     myhighlighter.h \
     parsing.h \
+    prettifying.h \
     xml_to_json.h
 
 FORMS += \

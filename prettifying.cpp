@@ -1,14 +1,9 @@
-#ifndef PRETTIFYING_H_
-#define PRETTIFYING_H_
-#include <iostream>
-#include <vector>
-#include <string>
-#include <stack>
-#include "parsing.h"
+#include "prettifying.h"
+
 
 using namespace std;
 
-string tabs(int tabsCount, string tab = "\t")
+string tabs(int tabsCount, string tab )
 {
   string text = "";
   for (int i = 0; i < tabsCount; i++)
@@ -45,7 +40,7 @@ void testTabs()
   cout << "\n\n";
 }
 
-string printPrettyXmlTree(TreeNode n, int depth, string tab = "\t")
+string printPrettyXmlTree(TreeNode n, int depth, string tab)
 {
   string prettyXml = "";
   if (n.isText)
@@ -127,4 +122,4 @@ void testPrettify()
   cout << "\n\n\n";
 }
 
-#endif
+
