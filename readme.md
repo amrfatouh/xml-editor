@@ -77,7 +77,6 @@ Represents an input file after processing using parse function. It consists of t
 Represents the file in the state before viewing to the user. Usually the functions which produce the final output viewed to the user deal with that data structure and their output is stored in it
 
 ![Relation between classes in the project](./readme_images/classes_diagram.png)
-Relation between classes in the project
 
 ### Huffman Node
 It’s used in compression operation, as we use Huffman lossless compression technique. It stores the value and its frequency in a text and has 2 pointers for the left and the right nodes.
